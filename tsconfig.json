@@ -1,15 +1,35 @@
 {
     "compilerOptions": {
-        "target": "ES6",
+        "baseUrl": "src",
+        "target": "ES2020",
         "module": "commonjs",
         "rootDir": ".",
+        "outDir": "./dist",
         "strict": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "baseUrl": "src",
-        "typeRoots": ["./src/types", "./node_modules/@types"]
-    }
+        "types": [
+            "node",
+            "express",
+            "body-parser"
+        ],
+        "typeRoots": [
+            "./src/types",
+            "./node_modules/@types"
+        ],
+        "paths": {
+            "@generated/*": [
+                "../generated/prisma/*"
+            ],
+        }
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }

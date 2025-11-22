@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+    postgres:
+        image: postgres:13
+        container_name: postgres_trace_log_db
+        restart: always
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=123postgres123
+            - POSTGRES_DB=trace-log
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+    mongo:
+        image: mongo:7
+        container_name: mongo_trace_log_db
+        restart: always
+        ports:
+            - "27017:27017"
+        volumes:
+            - mongo_data:/data/db
+
+    redis:
+        image: redis:7
+        container_name: redis_trace_log_db
+        restart: always
+        ports:
+            - "6379:6379"
+        command: ["redis-server" , "--appendonly" , "yes"]
+        volumes:
+            - redis_data:/data
+
+volumes:
+    postgres_data:
+    mongo_data:
+    redis_data:

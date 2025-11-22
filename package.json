@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node server.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register server.ts",
     "start": "nodemon --exec ts-node server.ts",
     "build": "tsc --build tsconfig.json"
   },
@@ -12,19 +12,31 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.19.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.2",
     "mongo": "^0.1.0",
     "prisma": "^6.19.0",
     "redis": "^5.9.0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.6",
+    "@types/connect": "^3.4.38",
     "@types/express": "^5.0.5",
+    "@types/express-serve-static-core": "^5.1.0",
+    "@types/http-errors": "^2.0.5",
+    "@types/mime": "^3.0.4",
     "@types/node": "^24.10.1",
+    "@types/qs": "^6.14.0",
+    "@types/range-parser": "^1.2.7",
+    "@types/send": "^1.2.1",
+    "@types/serve-static": "^2.2.0",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
   }
 }
