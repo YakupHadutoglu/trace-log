@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { access } from 'node:fs/promises';
 dotenv.config();
 
 type Env = {
@@ -6,6 +7,11 @@ type Env = {
     POSTGRES_URL: string | undefined;
     MONGO_URL: string | undefined;
     REDIS_URL: string | undefined;
+    NODE_ENV: string | undefined;
+    accessTokenSecret: string | number;
+    refreshTokenSecret: string | number;
+    accessTokenExpiresIn: string | number;
+    refreshTokenExpiresIn: string | number;
 }
 
 const env = {
@@ -13,6 +19,11 @@ const env = {
     POSTGRES_URL: process.env.POSTGRES_URL,
     MONGO_URL: process.env.MONGO_URL,
     REDIS_URL: process.env.REDIS_URL,
+    NODE_ENV: process.env.NODE_ENV,
+    accessTokenSecret: process.env.accessTokenSecret || 'secret-fallback',
+    refreshTokenSecret: process.env.refreshTokenSecret || 'secret-fallback',
+    accessTokenExpiresIn: process.env.accessTokenExpiresIn || '15m',
+    refreshTokenExpiresIn: process.env.refreshTokenExpiresIn || '7d',
 };
 
 export default env;

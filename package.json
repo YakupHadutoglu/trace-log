@@ -13,21 +13,27 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.19.0",
+    "@types/cookie-parser": "^1.4.10",
     "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.2",
     "mongo": "^0.1.0",
     "prisma": "^6.19.0",
-    "redis": "^5.9.0"
+    "redis": "^5.9.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/body-parser": "^1.19.6",
     "@types/connect": "^3.4.38",
     "@types/express": "^5.0.5",
     "@types/express-serve-static-core": "^5.1.0",
     "@types/http-errors": "^2.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mime": "^3.0.4",
     "@types/node": "^24.10.1",
     "@types/qs": "^6.14.0",
