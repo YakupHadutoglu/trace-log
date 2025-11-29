@@ -12,6 +12,9 @@ type Env = {
     refreshTokenSecret: string | number;
     accessTokenExpiresIn: string | number;
     refreshTokenExpiresIn: string | number;
+    MAX_ATTEMPTS: string | undefined;
+    LOCKOUT_TIME: string | undefined;
+
 }
 
 const env = {
@@ -24,6 +27,9 @@ const env = {
     refreshTokenSecret: process.env.refreshTokenSecret || 'secret-fallback',
     accessTokenExpiresIn: process.env.accessTokenExpiresIn || '15m',
     refreshTokenExpiresIn: process.env.refreshTokenExpiresIn || '7d',
+    MAX_ATTEMPTS: process.env.MAX_ATTEMPTS,
+    LOCKOUT_TIME: process.env.LOCKOUT_TIME,
+
 };
 
 export default env;

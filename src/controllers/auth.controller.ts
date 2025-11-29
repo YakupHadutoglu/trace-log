@@ -5,20 +5,27 @@ import { COOKIE_OPTIONS } from "../config/cookie";
 import { access } from "fs";
 
 export const register = async (req: Request, res: Response) => {
-    const { name, surname, email, password } = req.body;
+    try {
+        const { name, surname, email, password } = req.body;
 
-    if (!name || !surname || !email || !password) return res.status(400).json({ message: "All fields are required." });
+        if (!name || !surname || !email || !password) return res.status(400).json({ message: "All fields are required." });
 
-    const existingUser = await AuthService.findUserByEmail(email);
-    if (existingUser) return res.status(409).json({ message: "User with this email already exists." });
+        const existingUser = await AuthService.findUserByEmail(email);
+        if (existingUser) return res.status(409).json({ message: "User with this email already exists." });
 
-    const user = await AuthService.createUser({ email, name, surname, password });
+        const user = await AuthService.createUser({ email, name, surname, password });
 
-    return res.status(201).json({ ok:true , user });
+        return res.status(201).json({ ok: true, user });
+    } catch (error) {
+        console.error('Registration Error:', error);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+
 }
 
 export const login = async (req: Request, res: Response) => {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
     if (!email || !password) return res.status(400).json({ message: "All fields are required." });
 
@@ -34,6 +41,11 @@ export const login = async (req: Request, res: Response) => {
     res.cookie('csrfToken', csrf, { ...COOKIE_OPTIONS, httpOnly: false });
 
     return res.json({ accessToken: access, user: { id: user.id, name: user.name, surname: user.surname, email: user.email } });
+    } catch (error) {
+        console.error('Login Error:', error);
+        return res.status(500).json({ message: "Login Failed! Internal server error." });
+    }
+
 }
 
 export const refresh = async (req: Request, res: Response) => {
@@ -46,7 +58,7 @@ export const refresh = async (req: Request, res: Response) => {
         const newTokens = await AuthService.refreshSession(refreshToken, csrfToken as string);
 
         res.cookie('refreshToken', newTokens.refresh, COOKIE_OPTIONS);
-        res.cookie('csrfToken' , newTokens.csrf , { ...COOKIE_OPTIONS , httpOnly: false });
+        res.cookie('csrfToken', newTokens.csrf, { ...COOKIE_OPTIONS, httpOnly: false });
 
         return res.json({ accessToken: newTokens.access });
 
