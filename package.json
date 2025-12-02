@@ -27,7 +27,8 @@
     "mongo": "^0.1.0",
     "prisma": "^6.19.0",
     "redis": "^5.9.0",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
