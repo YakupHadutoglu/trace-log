@@ -2,28 +2,42 @@ import { Request, Response, NextFunction } from 'express';
 import { sanitizeInput } from '../lib/sanitizeInput';
 
 /**
- *A given object sanitizes values in the array or string as self -authentic.
- *Change the object or array on-site.
- *@Param obj to be sanitized objects, sequences or string.
- *@returns sanitized object.
+ * Sanitizes a string or object recursively
  */
 
-export const santitizeObject = (object: any): any =>  {
+export const sanitizeObject = (object: any): any => {
     if (typeof object === 'string') {
         return sanitizeInput(object);
-    } else {
+    } else if (object && typeof object === 'object') {
+        const sanitized: any = Array.isArray(object) ? [] : {};
         for (const key in object) {
-            if (Object.prototype.hasOwnProperty.call(object , key)) {
-                object[key] = sanitizeInput(object[key]);
+            if (Object.prototype.hasOwnProperty.call(object, key)) {
+                sanitized[key] = sanitizeObject(object[key]);
             }
         }
-        return object;
+        return sanitized;
     }
-}
+    return object;
+};
 
 export const sanitizeRequest = (req: Request, res: Response, next: NextFunction) => {
-    req.body = santitizeObject(req.body);
-    req.params = santitizeObject(req.params);
-    req.query = santitizeObject(req.query);
+    if (req.body) req.body = sanitizeObject(req.body); //! body safe
+
+    if (req.query) {
+        for (const key in req.query) {
+            if (Object.prototype.hasOwnProperty.call(req.query, key)) {
+                req.query[key] = sanitizeObject(req.query[key]); //! mutate
+            }
+        }
+    }
+
+    if (req.params) {
+        for (const key in req.params) {
+            if (Object.prototype.hasOwnProperty.call(req.params, key)) {
+                req.params[key] = sanitizeObject(req.params[key]); //! mutate
+            }
+        }
+    }
+
     next();
-}
+};
