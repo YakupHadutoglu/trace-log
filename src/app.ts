@@ -11,6 +11,7 @@ import bodyParser from 'body-parser';
 import auth from './routers/index';
 import noCache from './middlewares/noCache';
 import rateLimit from './lib/rateLimit';
+import { sanitizeRequest } from './middlewares/sanitizeRequest';
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use(
     helmet.dnsPrefetchControl(),
 );
 app.use(rateLimit);
+app.use(sanitizeRequest);
 
 app.use(auth);
 
