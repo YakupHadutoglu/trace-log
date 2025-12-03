@@ -26,26 +26,28 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
+        if (!email || !password) return res.status(400).json({ message: "All fields are required." });
 
-    if (!email || !password) return res.status(400).json({ message: "All fields are required." });
+        const { access, refresh, csrf, user } = await AuthService.login(email, password);
 
-    const user = await AuthService.findUserByEmail(email);
-    if (!user) return res.status(401).json({ message: "Invalid credentials." });
+        res.cookie('refreshToken', refresh, COOKIE_OPTIONS);
+        res.cookie('csrfToken', csrf, { ...COOKIE_OPTIONS, httpOnly: false });
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) return res.status(401).json('Invalid credentials.');
+        return res.json({ accessToken: access, user });
 
-    const { access, refresh, csrf } = await AuthService.createSession(user.id, { name: user.name, surname: user.surname, email: user.email });
+    } catch (error: any) {
+        console.error('Login Error:', error.message);
 
-    res.cookie('refreshToken', refresh, COOKIE_OPTIONS);
-    res.cookie('csrfToken', csrf, { ...COOKIE_OPTIONS, httpOnly: false });
+        if (error.message.includes('kilitlendi')) {
+            return res.status(429).json({ message: error.message }); // 429 Too Many Requests
+        }
 
-    return res.json({ accessToken: access, user: { id: user.id, name: user.name, surname: user.surname, email: user.email } });
-    } catch (error) {
-        console.error('Login Error:', error);
+        if (error.message === 'Invalid Credentials' || error.message === 'User Not Found') {
+            return res.status(401).json({ message: "Invalid credentials." });
+        }
+
         return res.status(500).json({ message: "Login Failed! Internal server error." });
     }
-
 }
 
 export const refresh = async (req: Request, res: Response) => {

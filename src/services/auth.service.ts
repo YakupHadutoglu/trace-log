@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { prisma } from '../config/prisma';
-import { redisClient } from 'config/redis';
+import { redisClient } from '../config/redis';
 import env from '../config/env';
 import { CreateUserDto } from '../types/user';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token';
@@ -34,21 +34,34 @@ export class AuthService {
 
     static async login(email: string, password: string) {
         const user = await this.findUserByEmail(email);
-        if (!user) throw new Error('User Not Found');
+
+        if (!user) throw new Error('Invalid Credentials');
+
         const userIdStr = user.id.toString();
 
         const locked = await isUserLocked(userIdStr);
-        if (locked) throw new Error('Account is temporarily locked due to multiple failed login attempts. Please try again later.');
+        if (locked) {
+            throw new Error('Hesabınız çok fazla başarısız deneme nedeniyle geçici olarak kilitlendi. Lütfen daha sonra tekrar deneyin.');
+        }
 
-        const isMastched = await bcrypt.compare(password, user.password);
-        if (!isMastched) {
+        const isMatched = await bcrypt.compare(password, user.password);
+        if (!isMatched) {
             await increaseFailedAttempts(userIdStr);
-            throw new Error('İnvalid Credentials');
+            throw new Error('Invalid Credentials');
         }
 
         await resetFailedAttempts(userIdStr);
 
-        return await this.createSession(user.id ,  { name: user.name, surname: user.surname , email: user.email });
+        const sessionData = await this.createSession(user.id, {
+            name: user.name,
+            surname: user.surname,
+            email: user.email
+        });
+
+        return {
+            ...sessionData,
+            user: { id: user.id, name: user.name, surname: user.surname, email: user.email }
+        };
     }
 
     static async createSession(userId: number | string, extraPayload: object = {}) {
