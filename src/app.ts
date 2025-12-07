@@ -8,7 +8,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 
-import auth from './routers/index';
+import router from './routers/index';
 import noCache from './middlewares/noCache';
 import rateLimit from './lib/rateLimit';
 import { sanitizeRequest } from './middlewares/sanitizeRequest';
@@ -44,11 +44,10 @@ app.use(
 app.use(rateLimit);
 app.use(sanitizeRequest);
 
-app.use(auth);
+app.use(router);
 
 app.get('/', async (req: Request, res: Response) => {
-    const users = await prisma.user.findMany();
-    res.json(users);
+    res.send('Trace Log API is running...');
 });
 
 export async function start() {

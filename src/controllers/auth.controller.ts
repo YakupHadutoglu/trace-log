@@ -33,7 +33,8 @@ export const login = async (req: Request, res: Response) => {
         res.cookie('refreshToken', refresh, COOKIE_OPTIONS);
         res.cookie('csrfToken', csrf, { ...COOKIE_OPTIONS, httpOnly: false });
 
-        return res.json({ accessToken: access, user });
+        // return res.json({ accessToken: access, user });
+        return res.json({ accessToken: access, user }).redirect('/');
 
     } catch (error: any) {
         console.error('Login Error:', error.message);
