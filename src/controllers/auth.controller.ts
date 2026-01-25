@@ -13,7 +13,10 @@ export const register = async (req: Request, res: Response) => {
         const existingUser = await AuthService.findUserByEmail(email);
         if (existingUser) return res.status(409).json({ message: "User with this email already exists." });
 
-        const user = await AuthService.createUser({ email, name, surname, password });
+        const user = await AuthService.createUser({ email, name, surname, password, approvedStatus: false });
+
+        const authHeader = req.cookies['accessToken'];
+        console.log('Access Token from cookies:', authHeader);
 
         return res.status(201).json({ ok: true, user });
     } catch (error) {
@@ -32,9 +35,14 @@ export const login = async (req: Request, res: Response) => {
 
         res.cookie('refreshToken', refresh, COOKIE_OPTIONS);
         res.cookie('csrfToken', csrf, { ...COOKIE_OPTIONS, httpOnly: false });
+        res.cookie('accessToken', access, {
+            httpOnly: true, 
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000
+        });
 
-        // return res.json({ accessToken: access, user });
-        return res.json({ accessToken: access, user }).redirect('/');
+        return res.json({ accessToken: access, user });
 
     } catch (error: any) {
         console.error('Login Error:', error.message);

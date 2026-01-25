@@ -1,7 +1,10 @@
-import { Request , Response } from "express";
+import { Request, Response } from "express";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import VerifyService from '../services/verify.service';
 import { AuthService } from "../services/auth.service";
 import env from "../config/env";
+import { access } from "node:fs";
 
 export const confirmVertification = async (req: Request, res: Response) => {
     try {
@@ -40,7 +43,13 @@ export const confirmVertification = async (req: Request, res: Response) => {
                 </body>
             </html>
         `);
-        
+
+        console.log('User verified and logged in via email confirmation.' , sessionData);
+        const { csrf, access, refresh } = sessionData;
+        const accessPayload = jwt.decode(access);
+        const refreshPayload = jwt.decode(refresh);
+        console.log('Access token payload:' , accessPayload);
+        console.log('Refresh token payload:' , refreshPayload);
     } catch (error) {
         console.error('Verification Error:', error);
         return res.status(400).send(`Doğrulama başarısız: ${error}`);

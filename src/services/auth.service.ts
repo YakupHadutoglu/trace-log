@@ -21,95 +21,96 @@ export class AuthService {
                 name: data.name,
                 surname: data.surname,
                 email: data.email,
-                password: hashedPassword
+                password: hashedPassword,
+                approvedStatus: false
             },
             select: {
                 id: true,
                 name: true,
                 surname: true,
                 email: true,
+                approvedStatus: false
             }
         });
-        // HATA BURADAYDI: Bu kodlar parantezin dışındaydı, içeri aldım.
         VerifyService.sendVerificationEmail(newUser).catch(err => {
             console.error("Mail gönderme hatası:", err);
-            // Log servisine hata basılabilir
         });
         return newUser;
     }
 
     static async login(email: string, password: string) {
-    const user = await this.findUserByEmail(email);
+        const user = await this.findUserByEmail(email);
 
-    if (!user) throw new Error('Invalid Credentials');
+        if (!user) throw new Error('Invalid Credentials');
 
-    const userIdStr = user.id.toString();
+        const userIdStr = user.id.toString();
 
-    const locked = await isUserLocked(userIdStr);
-    if (locked) {
-        throw new Error('Hesabınız çok fazla başarısız deneme nedeniyle geçici olarak kilitlendi. Lütfen daha sonra tekrar deneyin.');
+        const locked = await isUserLocked(userIdStr);
+        if (locked) {
+            throw new Error('Hesabınız çok fazla başarısız deneme nedeniyle geçici olarak kilitlendi. Lütfen daha sonra tekrar deneyin.');
+        }
+
+        const isMatched = await bcrypt.compare(password, user.password);
+        if (!isMatched) {
+            await increaseFailedAttempts(userIdStr);
+            throw new Error('Invalid Credentials');
+        }
+
+        await resetFailedAttempts(userIdStr);
+
+        const sessionData = await this.createSession(user.id, {
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            approvedStatus: (user as any).approvedStatus
+        });
+
+        return {
+            ...sessionData,
+            user: { id: user.id, name: user.name, surname: user.surname, email: user.email, approvedStatus: (user as any).approvedStatus }
+        };
     }
-
-    const isMatched = await bcrypt.compare(password, user.password);
-    if (!isMatched) {
-        await increaseFailedAttempts(userIdStr);
-        throw new Error('Invalid Credentials');
-    }
-
-    await resetFailedAttempts(userIdStr);
-
-    const sessionData = await this.createSession(user.id, {
-        name: user.name,
-        surname: user.surname,
-        email: user.email
-    });
-
-    return {
-        ...sessionData,
-        user: { id: user.id, name: user.name, surname: user.surname, email: user.email }
-    };
-}
 
     static async createSession(userId: number | string, extraPayload: object = {}) {
-    const userIdStr = userId.toString();
+        const userIdStr = userId.toString();
 
-    const access = signAccessToken({ sub: userIdStr, ...extraPayload } as any);
-    const refresh = signRefreshToken({ sub: userIdStr } as any);
-    const csrf = uuidv4();
+        const access = signAccessToken({ sub: userIdStr, ...extraPayload } as any);
+        const refresh = signRefreshToken({ sub: userIdStr } as any);
+        const csrf = uuidv4();
 
-    const decoded = jwt.decode(refresh) as any;
-    const expiresAtMs = (decoded?.exp ? decoded.exp * 1000 : Date.now() + 7 * 24 * 60 * 60 * 1000);
-    const ttlSeconds = Math.ceil((expiresAtMs - Date.now()) / 1000);
+        const decoded = jwt.decode(refresh) as any;
+        const expiresAtMs = (decoded?.exp ? decoded.exp * 1000 : Date.now() + 7 * 24 * 60 * 60 * 1000);
+        const ttlSeconds = Math.ceil((expiresAtMs - Date.now()) / 1000);
 
-    const key = `refresh:${refresh}`;
-    const value = JSON.stringify({ userId: userIdStr, csrf, expiresAt: expiresAtMs });
+        const key = `refresh:${refresh}`;
+        const value = JSON.stringify({ userId: userIdStr, csrf, expiresAt: expiresAtMs });
 
-    await redisClient.set(key, value, 'EX', ttlSeconds);
+        await redisClient.set(key, value, 'EX', ttlSeconds);
 
-    return { access, refresh, csrf };
-}
+        return { access, refresh, csrf };
+    }
     static async validateRefreshToken(token: string) {
-    const key = `refresh:${token}`;
-    const raw = await redisClient.get(key);
-    if (!raw) return null;
-    return JSON.parse(raw) as { userId: string; csrf: string; expiresAt: number };
-};
+        const key = `refresh:${token}`;
+        const raw = await redisClient.get(key);
+        if (!raw) return null;
+        return JSON.parse(raw) as { userId: string; csrf: string; expiresAt: number };
+    };
     static async deleteSession(token: string) {
-    await redisClient.del(`refresh:${token}`);
-}
+        await redisClient.del(`refresh:${token}`);
+    }
     static async refreshSession(refreshToken: string, csrfHeader: string) {
-    const payload = verifyRefreshToken(refreshToken);
-    if (!payload) throw new Error('Invalid refresh token.');
+        const payload = verifyRefreshToken(refreshToken);
+        if (!payload) throw new Error('Invalid refresh token.');
 
-    const record = await this.validateRefreshToken(refreshToken);
-    if (!record) throw new Error('Session not found or expired in Redis');
+        const record = await this.validateRefreshToken(refreshToken);
+        if (!record) throw new Error('Session not found or expired in Redis');
 
-    if (!csrfHeader || record.csrf !== csrfHeader) throw new Error('CSRF token mismatch.: CSRF Token çalınmış olabilir.');
+        if (!csrfHeader || record.csrf !== csrfHeader) throw new Error('CSRF token mismatch.: CSRF Token çalınmış olabilir.');
 
-    await this.deleteSession(refreshToken);
+        await this.deleteSession(refreshToken);
 
-    return await this.createSession(record.userId);
-}
+        return await this.createSession(record.userId);
+    }
 
 }
 
