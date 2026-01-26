@@ -22,14 +22,16 @@ export class AuthService {
                 surname: data.surname,
                 email: data.email,
                 password: hashedPassword,
-                approvedStatus: false
+                approvedStatus: false,
+                phoneNumber: data.phoneNumber
             },
             select: {
                 id: true,
                 name: true,
                 surname: true,
                 email: true,
-                approvedStatus: false
+                approvedStatus: false,
+                phoneNumber: true
             }
         });
         VerifyService.sendVerificationEmail(newUser).catch(err => {

@@ -15,11 +15,25 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  email String @unique
-  name String
-  surname String
-  password String
-  approvedStatus Boolean @default(false)
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  name            String
+  surname         String
+  password        String
+  approvedStatus  Boolean   @default(false)
+  phoneNumber     String    @unique
+  isPhoneVerified Boolean   @default(false)
+  projects        Project[]
+  createdAt       DateTime  @default(now())
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  platform  String
+  useCase   String
+  apiKey    String   @unique
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }

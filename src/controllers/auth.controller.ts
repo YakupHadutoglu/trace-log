@@ -3,17 +3,19 @@ import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { COOKIE_OPTIONS } from "../config/cookie";
 import { access } from "fs";
+import { prisma } from "../config/prisma";
+import { smsService } from "services/sms.service";
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { name, surname, email, password } = req.body;
+        const { name, surname, email, password, phoneNumber} = req.body;
 
-        if (!name || !surname || !email || !password) return res.status(400).json({ message: "All fields are required." });
+        if (!name || !surname || !email || !password || !phoneNumber) return res.status(400).json({ message: "All fields are required." });
 
         const existingUser = await AuthService.findUserByEmail(email);
         if (existingUser) return res.status(409).json({ message: "User with this email already exists." });
 
-        const user = await AuthService.createUser({ email, name, surname, password, approvedStatus: false });
+        const user = await AuthService.createUser({ email, name, surname, password, approvedStatus: false, phoneNumber });
 
         const authHeader = req.cookies['accessToken'];
         console.log('Access Token from cookies:', authHeader);
@@ -36,7 +38,7 @@ export const login = async (req: Request, res: Response) => {
         res.cookie('refreshToken', refresh, COOKIE_OPTIONS);
         res.cookie('csrfToken', csrf, { ...COOKIE_OPTIONS, httpOnly: false });
         res.cookie('accessToken', access, {
-            httpOnly: true, 
+            httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'strict',
             maxAge: 15 * 60 * 1000
@@ -92,3 +94,4 @@ export const logout = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Login Failed! Internal server error." });
     }
 }
+

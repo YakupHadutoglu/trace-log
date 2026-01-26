@@ -19,6 +19,7 @@ type Env = {
     hostPassword: string | undefined;
     smtpPort: string | undefined;
     API_URL: string | undefined;
+    SMS_EXPIRY: string | undefined;
 }
 
 const env = {
@@ -38,6 +39,7 @@ const env = {
     hostPassword: process.env.hostPassword,
     smtpPort: process.env.smtpPort,
     API_URL: process.env.API_URL,
+    SMS_EXPIRY: process.env.SMS_EXPIRY,
 };
 
 export default env;
