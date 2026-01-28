@@ -12,7 +12,7 @@ export const confirmVertification = async (req: Request, res: Response) => {
 
         if (!token || typeof token !== 'string') return res.status(400).json({ message: "Invalid verification link." });
 
-        const { sessionData } = await VerifyService.verifyEmailAndLogin(token);
+        const { sessionData , user } = await VerifyService.verifyEmailAndLogin(token);
 
         res.cookie('accessToken', sessionData.access, {
             httpOnly: true,
@@ -49,7 +49,36 @@ export const confirmVertification = async (req: Request, res: Response) => {
         const accessPayload = jwt.decode(access);
         const refreshPayload = jwt.decode(refresh);
         console.log('Access token payload:' , accessPayload);
-        console.log('Refresh token payload:' , refreshPayload);
+        console.log('Refresh token payload:', refreshPayload);
+
+        console.log('\n\n----------------------------------------------------------------');
+        console.log(`✅ [SİSTEM] Kullanıcı doğrulandı: ${user.email || 'Bilinmiyor'}`);
+        console.log('🔒 [GÜVENLİK] "Graceful Session Termination" protokolü simüle ediliyor...');
+        console.log('----------------------------------------------------------------\n');
+
+        let counter = 5;
+
+        const setIntervalContDown = setInterval(async () => {
+            process.stdout.write(`\r⏳ Oturum kapatılıyor: ${counter} saniye...  `);
+
+            counter--;
+
+            if(counter < 0) {
+                clearInterval(setIntervalContDown);
+
+                try {
+                    await AuthService.deleteSession(sessionData.refresh);
+
+                    console.log('\n\n🚫 [SİSTEM] SÜRE DOLDU.');
+                    console.log('💥 [ACTION] Redis Session kaydı SİLİNDİ.');
+                    console.log('👋 [ACTION] Kullanıcı başarıyla logout edildi.');
+                    console.log('----------------------------------------------------------------\n');
+                } catch (error) {
+                    console.error('Verification Logout Error: ', error);
+                }
+            }
+        }, 1000);
+
     } catch (error) {
         console.error('Verification Error:', error);
         return res.status(400).send(`Doğrulama başarısız: ${error}`);
