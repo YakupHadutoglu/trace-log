@@ -20,18 +20,9 @@ export const signRefreshToken = (payload: payload): string => {
 }
 
 export const verifyAccessToken = (token: string) => {
-    try { 
-        return jwt.verify(token, env.accessTokenSecret as jwt.Secret) as TokenPayload
-    } catch (error) {
-        return null;
-    }
+    return jwt.verify(token, env.accessTokenSecret as jwt.Secret) as TokenPayload
 }
 
 export const verifyRefreshToken = (token: string) => {
-    try {
-        return jwt.verify(token, env.refreshTokenSecret as jwt.Secret) as TokenPayload;
-
-    } catch (error) {
-        return null;
-    }
+    return jwt.verify(token, env.refreshTokenSecret as jwt.Secret) as TokenPayload;
 }
