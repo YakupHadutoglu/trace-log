@@ -6,6 +6,7 @@ export interface TokenPayload {
     surname: string;
     email: string;
     approvedStatus: boolean;
+    isPhoneVerified: boolean;
     [key: string]: any;
 }
 

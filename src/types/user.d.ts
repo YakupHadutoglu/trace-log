@@ -5,4 +5,5 @@ export interface CreateUserDto {
     password: string;
     approvedStatus: boolean;
     phoneNumber: string;
+    isPhoneVerified: boolean;
 }

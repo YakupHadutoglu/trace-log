@@ -23,15 +23,17 @@ export class AuthService {
                 email: data.email,
                 password: hashedPassword,
                 approvedStatus: false,
-                phoneNumber: data.phoneNumber
+                phoneNumber: data.phoneNumber,
+                isPhoneVerified: false
             },
             select: {
                 id: true,
                 name: true,
                 surname: true,
                 email: true,
-                approvedStatus: false,
-                phoneNumber: true
+                approvedStatus: true,
+                phoneNumber: true,
+                isPhoneVerified: true
             }
         });
         VerifyService.sendVerificationEmail(newUser).catch(err => {
@@ -64,12 +66,13 @@ export class AuthService {
             name: user.name,
             surname: user.surname,
             email: user.email,
-            approvedStatus: (user as any).approvedStatus
+            approvedStatus: (user as any).approvedStatus,
+            isPhoneVerified: (user as any).isPhoneVerified
         });
 
         return {
             ...sessionData,
-            user: { id: user.id, name: user.name, surname: user.surname, email: user.email, approvedStatus: (user as any).approvedStatus }
+            user: { id: user.id, name: user.name, surname: user.surname, email: user.email, approvedStatus: (user as any).approvedStatus, isPhoneVerified: (user as any).isPhoneVerified }
         };
     }
 
@@ -107,13 +110,26 @@ export class AuthService {
         const record = await this.validateRefreshToken(refreshToken);
         if (!record) throw new Error('Session not found or expired in Redis');
 
-        if (!csrfHeader || record.csrf !== csrfHeader) throw new Error('CSRF token mismatch.: CSRF Token çalınmış olabilir.');
+        if (!csrfHeader || record.csrf !== csrfHeader) throw new Error('CSRF token mismatch.');
 
         await this.deleteSession(refreshToken);
 
-        return await this.createSession(record.userId);
-    }
+        const user = await prisma.user.findUnique({
+            where: { id: Number(record.userId) } // ID tipine göre ayarla
+        });
 
+        if (!user) throw new Error('User record not found during refresh.');
+
+        return await this.createSession(user.id, {
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            approvedStatus: user.approvedStatus,
+            phoneNumber: user.phoneNumber,
+            isPhoneVerified: user.isPhoneVerified, // DB'den gelen taze veri
+            createdAt: user.createdAt
+        });
+    }
 }
 
 

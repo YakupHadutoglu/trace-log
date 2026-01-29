@@ -15,7 +15,7 @@ export const register = async (req: Request, res: Response) => {
         const existingUser = await AuthService.findUserByEmail(email);
         if (existingUser) return res.status(409).json({ message: "User with this email already exists." });
 
-        const user = await AuthService.createUser({ email, name, surname, password, approvedStatus: false, phoneNumber });
+        const user = await AuthService.createUser({ email, name, surname, password, approvedStatus: false, phoneNumber, isPhoneVerified: false });
 
         const authHeader = req.cookies['accessToken'];
         console.log('Access Token from cookies:', authHeader);

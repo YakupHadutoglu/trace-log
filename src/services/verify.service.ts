@@ -43,12 +43,14 @@ export default class VerifyService {
 
         await redisClient.del(`email_verify:${token}`);
 
-        const sessionData = await AuthService.createSession(user.id , {
+        const sessionData = await AuthService.createSession(user.id, {
             name: user.name,
             surname: user.surname,
             email: user.email,
-            approvedStatus: user.approvedStatus
+            approvedStatus: user.approvedStatus,
+            isPhoneVerified: user.isPhoneVerified
+            
         });
-        return { sessionData , user }
+        return { sessionData, user }
     }
 }

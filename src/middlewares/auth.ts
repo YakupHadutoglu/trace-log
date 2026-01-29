@@ -4,15 +4,23 @@ import { verifyAccessToken } from 'utils/token';
 
 export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
     try {
-        const authHeader = req.headers.authorization;
+        let token: string | undefined;
 
-        if (!authHeader || !authHeader.startsWith('Bearer ')) return res.status(401).json({ message: 'Unauthorized! No token provided ' });
+        if (req.cookies && req.cookies['accessToken']) {
+            token = req.cookies['accessToken'];
+        }
 
-        const token = authHeader.split(' ')[1];
+        else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+
+        if (!token) {
+            return res.status(401).json({ message: 'Yetkisiz Erişim: Oturum bulunamadı.' });
+        }
 
         const decoded = verifyAccessToken(token);
 
-        if (!decoded) return res.status(401).json({ message: 'Unauthorized: on expired token.' });
+        if (!decoded) return res.status(401).json({ message: 'Geçersiz Token.' });
 
         req.user = decoded;
         next();

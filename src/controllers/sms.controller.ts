@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import { smsService } from "../services/sms.service";
 import Redis from "ioredis";
+import { AuthService } from "../services/auth.service";
+import { success } from "zod";
 
 export const sendPhoneVerification = async (req: Request, res: Response) => {
     try {
@@ -35,13 +37,55 @@ export const verifyPhoneCode = async (req: Request, res: Response) => {
 
         if (storedCode !== code) return res.status(400).json({ message: "Invalid verification code" })
 
-        await prisma.user.update({
-            where: { id: userId },
-            data: { isPhoneVerified: true }
+        const updatedUser = await prisma.user.update({
+            where: { id: Number(userId) }, // ID tipine dikkat (Number/String)
+            data: { isPhoneVerified: true },
+            select: {
+                id: true,
+                name: true,
+                surname: true,
+                email: true,
+                approvedStatus: true,
+                phoneNumber: true,
+                isPhoneVerified: true
+            }
         });
 
         await smsService.deleteVerificationCode(userId);
-        res.status(200).json({ message: "Your phone number has been successfully verified, and you can now create your project." });
+
+        const sessionData = await AuthService.createSession(updatedUser.id, {
+            name: updatedUser.name,
+            surname: updatedUser.surname,
+            email: updatedUser.email,
+            approvedStatus: updatedUser.approvedStatus,
+            phoneNumber: updatedUser.phoneNumber,
+            isPhoneVerified: true
+        });
+
+        res.cookie('accessToken', sessionData.access, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000
+        });
+
+        res.cookie('refreshToken', sessionData.refresh, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        res.cookie('csrfToken', sessionData.csrf, {
+            httpOnly: false, // false so that it can be read in the CSRF header.
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Your phone number has been successfully verified, and you can now create your project."
+        });
         console.log("Phone number verified successfully.");
     } catch (error) {
         console.error(`Error in verifPhoneCode: ${error}`);

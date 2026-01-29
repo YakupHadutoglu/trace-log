@@ -12,7 +12,11 @@ export const sanitizeObject = (object: any): any => {
         const sanitized: any = Array.isArray(object) ? [] : {};
         for (const key in object) {
             if (Object.prototype.hasOwnProperty.call(object, key)) {
-                sanitized[key] = sanitizeObject(object[key]);
+                if (key === 'password' || key === 'confirmPassword') {
+                    sanitized[key] = object[key]; // Do not sanitize passwords
+                } else {
+                    sanitized[key] = sanitizeObject(object[key]);
+                }
             }
         }
         return sanitized;
