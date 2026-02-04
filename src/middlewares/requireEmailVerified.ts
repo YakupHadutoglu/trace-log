@@ -1,5 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 
+class AppError extends Error {
+    statusCode: number;
+    constructor(message: string, statusCode = 500) {
+        super(message);
+        this.name = 'AppError';
+        this.statusCode = statusCode;
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, this.constructor);
+        }
+    }
+}
+
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
     if (!req.user) {
@@ -25,4 +37,3 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     next();
 
 }
-

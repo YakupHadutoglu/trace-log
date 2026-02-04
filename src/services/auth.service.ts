@@ -63,16 +63,18 @@ export class AuthService {
         await resetFailedAttempts(userIdStr);
 
         const sessionData = await this.createSession(user.id, {
+            id: user.id,
             name: user.name,
             surname: user.surname,
             email: user.email,
             approvedStatus: (user as any).approvedStatus,
+            phoneNumber: user.phoneNumber,
             isPhoneVerified: (user as any).isPhoneVerified
         });
 
         return {
             ...sessionData,
-            user: { id: user.id, name: user.name, surname: user.surname, email: user.email, approvedStatus: (user as any).approvedStatus, isPhoneVerified: (user as any).isPhoneVerified }
+            user: { id: user.id, name: user.name, surname: user.surname, email: user.email, approvedStatus: (user as any).approvedStatus, phoneNumber: user.phoneNumber, isPhoneVerified: (user as any).isPhoneVerified }
         };
     }
 

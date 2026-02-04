@@ -1,44 +1,47 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
-import { smsService } from "../services/sms.service";
-import Redis from "ioredis";
+import { smsService } from "../services/sms.service"; // Servis importu
 import { AuthService } from "../services/auth.service";
-import { success } from "zod";
 
 export const sendPhoneVerification = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
-        const { phoneNumber } = req.body;
+        const phoneNumber = req.body.phoneNumber || (req as any).user.phoneNumber;
 
         if (!phoneNumber) return res.status(400).json({ message: "Phone number is required" });
 
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        await smsService.generateAndSaveCode(userId, phoneNumber);
 
-        await smsService.saveSmsVerificationCode(userId, code);
-
-        console.log(`Verifification code for ${phoneNumber}: ${code}`);
-
-        res.json({ message: "Verification code sent and plase control the consol" });
+        res.json({ message: "Verification code sent. Please check console." });
     } catch (error) {
         console.error(`Error in sendPhoneVerification: ${error}`);
-        res.status(500).json({ message: "Internal server error" });
-
+        // headers check
+        if (!res.headersSent) res.status(500).json({ message: "Internal server error" });
     }
 }
 
 export const verifyPhoneCode = async (req: Request, res: Response) => {
     try {
+
         const userId = (req as any).user.id;
         const { code } = req.body;
 
-        const storedCode = await smsService.getVerificationCode(userId);
+        if (!code) {
+            return res.status(400).json({ message: "Code is required" });
+        }
 
-        if (!storedCode) return res.status(400).json({ message: "No Verification code found and time the expired" });
+        const storedCode = await smsService.getVerificationCode(String(userId));
 
-        if (storedCode !== code) return res.status(400).json({ message: "Invalid verification code" })
+        if (!storedCode) {
+            return res.status(400).json({ message: "Code expired or not found" });
+        }
+
+        if (storedCode !== code) {
+            return res.status(400).json({ message: "Invalid verification code" });
+        }
 
         const updatedUser = await prisma.user.update({
-            where: { id: Number(userId) }, // ID tipine dikkat (Number/String)
+            where: { id: Number(userId) },
             data: { isPhoneVerified: true },
             select: {
                 id: true,
@@ -51,9 +54,10 @@ export const verifyPhoneCode = async (req: Request, res: Response) => {
             }
         });
 
-        await smsService.deleteVerificationCode(userId);
+        await smsService.deleteVerificationCode(String(userId));
 
         const sessionData = await AuthService.createSession(updatedUser.id, {
+            id: updatedUser.id,
             name: updatedUser.name,
             surname: updatedUser.surname,
             email: updatedUser.email,
@@ -62,33 +66,33 @@ export const verifyPhoneCode = async (req: Request, res: Response) => {
             isPhoneVerified: true
         });
 
-        res.cookie('accessToken', sessionData.access, {
+        res.cookie("accessToken", sessionData.access, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
             maxAge: 15 * 60 * 1000
         });
 
-        res.cookie('refreshToken', sessionData.refresh, {
+        res.cookie("refreshToken", sessionData.refresh, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        res.cookie('csrfToken', sessionData.csrf, {
-            httpOnly: false, // false so that it can be read in the CSRF header.
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
+        res.cookie("csrfToken", sessionData.csrf, {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
         });
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
-            message: "Your phone number has been successfully verified, and you can now create your project."
+            message: "Phone verified successfully."
         });
-        console.log("Phone number verified successfully.");
+
     } catch (error) {
-        console.error(`Error in verifPhoneCode: ${error}`);
-        res.status(500).json({ message: "Internal server error" })
+        console.error(`Error: ${error}`);
+        if (!res.headersSent) res.status(500).json({ message: "Internal server error" });
     }
 }

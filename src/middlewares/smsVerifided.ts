@@ -1,33 +1,30 @@
 import { Request, Response, NextFunction } from 'express';
-import { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
-import { verifyAccessToken } from 'utils/token';
-import jwt from 'jsonwebtoken';
-import env from '../config/env';
-import { TokenPayload } from '../types/express/express';
+import { smsService } from '../services/sms.service'; 
 
-const smsVerified = (req: Request, res: Response, next: NextFunction) => {
+export const smsVerified = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        if (!req.user) return res.status(401).json({ message: 'Auth Missing' });
+        console.log('🧪 USER:', req.user);
+        console.log('📱 phoneNumber:', req.user.phoneNumber);
+        console.log('📞 typeof:', typeof req.user.phoneNumber);
 
-        if (!req.user) {
-            return res.status(401).json({
-                message: 'Sunucu Hatası: SMS kontrolü öncesinde kimlik doğrulaması yapılmamış.'
-            });
+        if (req.user.isPhoneVerified === true) return next();
+
+        console.log(`[AUTO-SMS] Kullanıcı (${req.user.email}) onaysız.`);
+
+        if (req.user.phoneNumber) {
+            await smsService.generateAndSaveCode(Number(req.user.id), req.user.phoneNumber);
         }
 
-        if (req.user.isPhoneVerified !== true) {
-            console.log(`Erişim Engellendi: Kullanıcı (${req.user.email}) telefonunu doğrulamamış.`);
-
-            return res.status(403).json({
-                error: 'PhoneNotVerified', // Frontend bunu yakalayıp SMS ekranını açabilir
-                message: 'Bu işlemi yapmak için lütfen telefon numaranızı doğrulayın.'
-            });
-        }
-
-        next();
+        return res.status(403).json({
+            error: 'PhoneNotVerified',
+            action: 'OPEN_OTP_MODAL',
+            message: 'Telefon onayı gerekli. Kod gönderildi.',
+            data: { phoneNumber: req.user.phoneNumber }
+        });
 
     } catch (error: any) {
-        console.error('SMS Verification Error: ', error);
-        return res.status(500).json({ message: 'Sunucu Hatası.' });
+        console.error('Middleware Error:', error);
+        return res.status(500).json({ message: 'Server Error' });
     }
 };
-
