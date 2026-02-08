@@ -43,7 +43,7 @@ export const login = async (req: Request, res: Response) => {
             sameSite: 'strict',
             maxAge: 15 * 60 * 1000
         });
-
+        console.log('user logged in succesfully:' , user);
         return res.json({ accessToken: access, user });
 
     } catch (error: any) {
@@ -88,6 +88,7 @@ export const logout = async (req: Request, res: Response) => {
         res.clearCookie('refreshToken', COOKIE_OPTIONS);
         res.clearCookie('csrfToken', { ...COOKIE_OPTIONS, httpOnly: false });
 
+        console.log('User loggoed out succesfully and sessionData deleted');
         return res.status(200).json({ message: "Loggeg out succesfully" });
     } catch (error) {
         console.error('Logout Error:', error);
