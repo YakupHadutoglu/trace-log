@@ -3,12 +3,16 @@ import * as AuthController from '../controllers/auth.controller';
 import { validate } from '../middlewares/validate';
 import { registerSchema } from '../schemas/register.schema';
 import { loginSchema } from '../schemas/login.schema';
+import { requireAuth } from '../middlewares/auth';
+import noCache from '../middlewares/noCache';
+import { verifyToken } from '../middlewares/requireEmailVerified';
 
 const router: Router = Router();
 
 router.post('/register', validate(registerSchema) , AuthController.register);
 router.post('/login', validate(loginSchema) , AuthController.login);
 router.post('/refresh', AuthController.refresh);
-router.post('/logout' , AuthController.logout);
+router.post('/logout', AuthController.logout);
+router.patch('/change-password', noCache , requireAuth, AuthController.changePassword);
 
 export default router;

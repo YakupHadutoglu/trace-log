@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 export interface TokenPayload {
     sub: string;
@@ -22,7 +23,7 @@ export type payload = {
 declare global {
     namespace Express {
         interface Request {
-            user?: TokenPayload;
+            user?: TokenPayload | payload | JwtPayload | any;
         }
     }
 }

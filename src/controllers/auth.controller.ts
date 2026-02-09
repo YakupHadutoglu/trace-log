@@ -8,7 +8,7 @@ import { smsService } from "services/sms.service";
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { name, surname, email, password, phoneNumber} = req.body;
+        const { name, surname, email, password, phoneNumber } = req.body;
 
         if (!name || !surname || !email || !password || !phoneNumber) return res.status(400).json({ message: "All fields are required." });
 
@@ -39,11 +39,11 @@ export const login = async (req: Request, res: Response) => {
         res.cookie('csrfToken', csrf, { ...COOKIE_OPTIONS, httpOnly: false });
         res.cookie('accessToken', access, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            secure: false,
+            sameSite: 'lax',
             maxAge: 15 * 60 * 1000
         });
-        console.log('user logged in succesfully:' , user);
+        console.log('user logged in succesfully:', user);
         return res.json({ accessToken: access, user });
 
     } catch (error: any) {
@@ -96,3 +96,51 @@ export const logout = async (req: Request, res: Response) => {
     }
 }
 
+export const changePassword = async (req: Request, res: Response) => {
+    try {
+        const userId = Number((req as any).user.id);
+        const { oldPassword, newPassword } = req.body;
+        const password = await AuthService.passwordDbGet(userId);
+        const currentRefreshToken = req.cookies['refreshToken'];
+
+        if (newPassword.length < 6) return res.status(400).json({ message: "Yeni şifre en az 6 karakter olmalıdır." });
+
+        const isMatched = await bcrypt.compare(oldPassword as string, password?.password as string);
+        if (!isMatched) return res.status(401).json({ message: "Old password is incorrect." });
+
+        await AuthService.changePassword(userId, oldPassword, newPassword);
+
+        console.log('\n\n----------------------------------------------------------------');
+        console.log(`✅ [SİSTEM] Şifre değişti. User ID: ${userId}`);
+        console.log('🔒 [GÜVENLİK] Oturum sonlandırma protokolü başlatılıyor...');
+        console.log('----------------------------------------------------------------\n');
+
+        if (currentRefreshToken) {
+            let counter = 5;
+            const logoutTimer = setInterval(async () => {
+                console.log(`⏳ Oturum kapatılıyor: ${counter}... `);
+
+                counter--;
+
+                if(counter < 0) {
+                    clearInterval(logoutTimer);
+                    try {
+                        await AuthService.deleteSession(currentRefreshToken);
+                        console.log('\n🚫 [SİSTEM] SÜRE DOLDU. Session Redis\'ten silindi.');
+                    } catch (err) {
+                        console.error('Logout Error:', err);
+                    }
+                }
+            }, 1000);
+        }
+
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+        res.clearCookie('csrfToken');
+
+        return res.status(200).json({ message: "succesfully changed password." });
+    } catch (error) {
+        console.error('changed password error: ', error);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+}

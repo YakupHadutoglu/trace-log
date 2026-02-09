@@ -132,6 +132,25 @@ export class AuthService {
             createdAt: user.createdAt
         });
     }
+    static async passwordDbGet(userId: number) {
+        const password = await prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                password: true
+            }
+        });
+        return password;
+    }
+    static async changePassword(userId: number, oldPassword: string, newPassword: string) {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                password: hashedPassword
+            }
+        });
+    }
 }
 
 
