@@ -46,6 +46,16 @@ export const newProjectService = async (userId: number , name: string, platform:
             userId: userId
         }
     });
+
+    const newcount = await prisma.user.update({
+        where: { id: userId },
+        data: {
+            projectCount: {
+                increment: 1
+            }
+        }
+    });
+    
     const keyExists = await redisClient.exists(getCacheKey(userId));
     if(keyExists) await redisClient.incr(getCacheKey(userId));
     return {
