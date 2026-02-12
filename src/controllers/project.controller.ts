@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../config/prisma';
 import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 
 import { currentProjectCountService , newProjectService } from '../services/project.service';
 
@@ -28,8 +29,11 @@ export const createProject = async (req: Request, res: Response) => {
         }
 
         const apiKey = generateApiKey();
+        const hashedApiKey: string = await bcrypt.hash(apiKey, 10);
 
-        const newProject = await newProjectService(name, platform, useCase, apiKey, userId);
+        console.log(`api key generation for user ${userId} - project name: ${name} - apiKey: ${apiKey}`);
+
+        const newProject = await newProjectService(name, platform, useCase, hashedApiKey, userId);
 
         res.status(201).json({
             message: 'Project created successfully.',

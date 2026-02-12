@@ -10,13 +10,13 @@ export const currentProjectCountService = async (userId: any) => {
     return currentProjectCount;
 }
 
-export const newProjectService = async (name: string, platform: string, useCase: string, apiKey: string, userId: number) => {
+export const newProjectService = async (name: string, platform: string, useCase: string, hashedApiKey: string, userId: number) => {
     const newProject = await prisma.project.create({
         data: {
             name: name,
             platform: platform,
             useCase: useCase,
-            apiKey: apiKey,
+            apiKey: hashedApiKey,
             userId: userId
         }
     });
