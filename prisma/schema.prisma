@@ -25,6 +25,7 @@ model User {
   isPhoneVerified Boolean   @default(false)
   projects        Project[]
   createdAt       DateTime  @default(now())
+  projectCount Int @default(0)
 }
 
 model Project {

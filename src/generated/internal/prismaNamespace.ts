@@ -607,7 +607,8 @@ export const UserScalarFieldEnum = {
   approvedStatus: 'approvedStatus',
   phoneNumber: 'phoneNumber',
   isPhoneVerified: 'isPhoneVerified',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  projectCount: 'projectCount'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

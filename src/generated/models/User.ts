@@ -28,10 +28,12 @@ export type AggregateUser = {
 
 export type UserAvgAggregateOutputType = {
   id: number | null
+  projectCount: number | null
 }
 
 export type UserSumAggregateOutputType = {
   id: number | null
+  projectCount: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -44,6 +46,7 @@ export type UserMinAggregateOutputType = {
   phoneNumber: string | null
   isPhoneVerified: boolean | null
   createdAt: Date | null
+  projectCount: number | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -56,6 +59,7 @@ export type UserMaxAggregateOutputType = {
   phoneNumber: string | null
   isPhoneVerified: boolean | null
   createdAt: Date | null
+  projectCount: number | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -68,16 +72,19 @@ export type UserCountAggregateOutputType = {
   phoneNumber: number
   isPhoneVerified: number
   createdAt: number
+  projectCount: number
   _all: number
 }
 
 
 export type UserAvgAggregateInputType = {
   id?: true
+  projectCount?: true
 }
 
 export type UserSumAggregateInputType = {
   id?: true
+  projectCount?: true
 }
 
 export type UserMinAggregateInputType = {
@@ -90,6 +97,7 @@ export type UserMinAggregateInputType = {
   phoneNumber?: true
   isPhoneVerified?: true
   createdAt?: true
+  projectCount?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -102,6 +110,7 @@ export type UserMaxAggregateInputType = {
   phoneNumber?: true
   isPhoneVerified?: true
   createdAt?: true
+  projectCount?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -114,6 +123,7 @@ export type UserCountAggregateInputType = {
   phoneNumber?: true
   isPhoneVerified?: true
   createdAt?: true
+  projectCount?: true
   _all?: true
 }
 
@@ -213,6 +223,7 @@ export type UserGroupByOutputType = {
   phoneNumber: string
   isPhoneVerified: boolean
   createdAt: Date
+  projectCount: number
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -248,6 +259,7 @@ export type UserWhereInput = {
   phoneNumber?: Prisma.StringFilter<"User"> | string
   isPhoneVerified?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  projectCount?: Prisma.IntFilter<"User"> | number
   projects?: Prisma.ProjectListRelationFilter
 }
 
@@ -261,6 +273,7 @@ export type UserOrderByWithRelationInput = {
   phoneNumber?: Prisma.SortOrder
   isPhoneVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  projectCount?: Prisma.SortOrder
   projects?: Prisma.ProjectOrderByRelationAggregateInput
 }
 
@@ -277,6 +290,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   approvedStatus?: Prisma.BoolFilter<"User"> | boolean
   isPhoneVerified?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  projectCount?: Prisma.IntFilter<"User"> | number
   projects?: Prisma.ProjectListRelationFilter
 }, "id" | "email" | "phoneNumber">
 
@@ -290,6 +304,7 @@ export type UserOrderByWithAggregationInput = {
   phoneNumber?: Prisma.SortOrder
   isPhoneVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  projectCount?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -310,6 +325,7 @@ export type UserScalarWhereWithAggregatesInput = {
   phoneNumber?: Prisma.StringWithAggregatesFilter<"User"> | string
   isPhoneVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  projectCount?: Prisma.IntWithAggregatesFilter<"User"> | number
 }
 
 export type UserCreateInput = {
@@ -321,6 +337,7 @@ export type UserCreateInput = {
   phoneNumber: string
   isPhoneVerified?: boolean
   createdAt?: Date | string
+  projectCount?: number
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
 }
 
@@ -334,6 +351,7 @@ export type UserUncheckedCreateInput = {
   phoneNumber: string
   isPhoneVerified?: boolean
   createdAt?: Date | string
+  projectCount?: number
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -346,6 +364,7 @@ export type UserUpdateInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
 }
 
@@ -359,6 +378,7 @@ export type UserUncheckedUpdateInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -372,6 +392,7 @@ export type UserCreateManyInput = {
   phoneNumber: string
   isPhoneVerified?: boolean
   createdAt?: Date | string
+  projectCount?: number
 }
 
 export type UserUpdateManyMutationInput = {
@@ -383,6 +404,7 @@ export type UserUpdateManyMutationInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -395,6 +417,7 @@ export type UserUncheckedUpdateManyInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -407,10 +430,12 @@ export type UserCountOrderByAggregateInput = {
   phoneNumber?: Prisma.SortOrder
   isPhoneVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  projectCount?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  projectCount?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -423,6 +448,7 @@ export type UserMaxOrderByAggregateInput = {
   phoneNumber?: Prisma.SortOrder
   isPhoneVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  projectCount?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -435,10 +461,12 @@ export type UserMinOrderByAggregateInput = {
   phoneNumber?: Prisma.SortOrder
   isPhoneVerified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  projectCount?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  projectCount?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -489,6 +517,7 @@ export type UserCreateWithoutProjectsInput = {
   phoneNumber: string
   isPhoneVerified?: boolean
   createdAt?: Date | string
+  projectCount?: number
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -501,6 +530,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   phoneNumber: string
   isPhoneVerified?: boolean
   createdAt?: Date | string
+  projectCount?: number
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -528,6 +558,7 @@ export type UserUpdateWithoutProjectsInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -540,6 +571,7 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -583,6 +615,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   phoneNumber?: boolean
   isPhoneVerified?: boolean
   createdAt?: boolean
+  projectCount?: boolean
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -597,6 +630,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phoneNumber?: boolean
   isPhoneVerified?: boolean
   createdAt?: boolean
+  projectCount?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -609,6 +643,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   phoneNumber?: boolean
   isPhoneVerified?: boolean
   createdAt?: boolean
+  projectCount?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -621,9 +656,10 @@ export type UserSelectScalar = {
   phoneNumber?: boolean
   isPhoneVerified?: boolean
   createdAt?: boolean
+  projectCount?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "surname" | "password" | "approvedStatus" | "phoneNumber" | "isPhoneVerified" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "surname" | "password" | "approvedStatus" | "phoneNumber" | "isPhoneVerified" | "createdAt" | "projectCount", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -646,6 +682,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     phoneNumber: string
     isPhoneVerified: boolean
     createdAt: Date
+    projectCount: number
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1079,6 +1116,7 @@ export interface UserFieldRefs {
   readonly phoneNumber: Prisma.FieldRef<"User", 'String'>
   readonly isPhoneVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly projectCount: Prisma.FieldRef<"User", 'Int'>
 }
     
 
