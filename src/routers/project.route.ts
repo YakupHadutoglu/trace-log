@@ -6,8 +6,11 @@ import { requireAuth } from 'middlewares/auth';
 import { smsVerified } from '../middlewares/smsVerifided';
 import { verifyToken } from "../middlewares/requireEmailVerified";
 
+import { apiKeyVerifiedMd } from 'middlewares/apiKeyVerified';
+
 const router: Router = Router();
 
 router.post('/create', noCache, requireAuth, verifyToken, smsVerified, ProjectController.createProject);
+router.patch('/:projectId/verify', noCache, requireAuth, verifyToken, ProjectController.apiKeyVerifiedProject);
 
 export default router;

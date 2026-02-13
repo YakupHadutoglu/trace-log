@@ -621,6 +621,7 @@ export const ProjectScalarFieldEnum = {
   useCase: 'useCase',
   apiKey: 'apiKey',
   userId: 'userId',
+  verificationKeyStatus: 'verificationKeyStatus',
   createdAt: 'createdAt'
 } as const
 

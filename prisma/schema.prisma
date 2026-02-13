@@ -36,5 +36,6 @@ model Project {
   apiKey    String   @unique
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
+  verificationKeyStatus Boolean @default(false)
   createdAt DateTime @default(now())
 }

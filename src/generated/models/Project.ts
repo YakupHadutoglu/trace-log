@@ -43,6 +43,7 @@ export type ProjectMinAggregateOutputType = {
   useCase: string | null
   apiKey: string | null
   userId: number | null
+  verificationKeyStatus: boolean | null
   createdAt: Date | null
 }
 
@@ -53,6 +54,7 @@ export type ProjectMaxAggregateOutputType = {
   useCase: string | null
   apiKey: string | null
   userId: number | null
+  verificationKeyStatus: boolean | null
   createdAt: Date | null
 }
 
@@ -63,6 +65,7 @@ export type ProjectCountAggregateOutputType = {
   useCase: number
   apiKey: number
   userId: number
+  verificationKeyStatus: number
   createdAt: number
   _all: number
 }
@@ -85,6 +88,7 @@ export type ProjectMinAggregateInputType = {
   useCase?: true
   apiKey?: true
   userId?: true
+  verificationKeyStatus?: true
   createdAt?: true
 }
 
@@ -95,6 +99,7 @@ export type ProjectMaxAggregateInputType = {
   useCase?: true
   apiKey?: true
   userId?: true
+  verificationKeyStatus?: true
   createdAt?: true
 }
 
@@ -105,6 +110,7 @@ export type ProjectCountAggregateInputType = {
   useCase?: true
   apiKey?: true
   userId?: true
+  verificationKeyStatus?: true
   createdAt?: true
   _all?: true
 }
@@ -202,6 +208,7 @@ export type ProjectGroupByOutputType = {
   useCase: string
   apiKey: string
   userId: number
+  verificationKeyStatus: boolean
   createdAt: Date
   _count: ProjectCountAggregateOutputType | null
   _avg: ProjectAvgAggregateOutputType | null
@@ -235,6 +242,7 @@ export type ProjectWhereInput = {
   useCase?: Prisma.StringFilter<"Project"> | string
   apiKey?: Prisma.StringFilter<"Project"> | string
   userId?: Prisma.IntFilter<"Project"> | number
+  verificationKeyStatus?: Prisma.BoolFilter<"Project"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -246,6 +254,7 @@ export type ProjectOrderByWithRelationInput = {
   useCase?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  verificationKeyStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -260,6 +269,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   platform?: Prisma.StringFilter<"Project"> | string
   useCase?: Prisma.StringFilter<"Project"> | string
   userId?: Prisma.IntFilter<"Project"> | number
+  verificationKeyStatus?: Prisma.BoolFilter<"Project"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "apiKey">
@@ -271,6 +281,7 @@ export type ProjectOrderByWithAggregationInput = {
   useCase?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  verificationKeyStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
   _avg?: Prisma.ProjectAvgOrderByAggregateInput
@@ -289,6 +300,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   useCase?: Prisma.StringWithAggregatesFilter<"Project"> | string
   apiKey?: Prisma.StringWithAggregatesFilter<"Project"> | string
   userId?: Prisma.IntWithAggregatesFilter<"Project"> | number
+  verificationKeyStatus?: Prisma.BoolWithAggregatesFilter<"Project"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
 }
 
@@ -297,6 +309,7 @@ export type ProjectCreateInput = {
   platform: string
   useCase: string
   apiKey: string
+  verificationKeyStatus?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProjectsInput
 }
@@ -308,6 +321,7 @@ export type ProjectUncheckedCreateInput = {
   useCase: string
   apiKey: string
   userId: number
+  verificationKeyStatus?: boolean
   createdAt?: Date | string
 }
 
@@ -316,6 +330,7 @@ export type ProjectUpdateInput = {
   platform?: Prisma.StringFieldUpdateOperationsInput | string
   useCase?: Prisma.StringFieldUpdateOperationsInput | string
   apiKey?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationKeyStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProjectsNestedInput
 }
@@ -327,6 +342,7 @@ export type ProjectUncheckedUpdateInput = {
   useCase?: Prisma.StringFieldUpdateOperationsInput | string
   apiKey?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationKeyStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -337,6 +353,7 @@ export type ProjectCreateManyInput = {
   useCase: string
   apiKey: string
   userId: number
+  verificationKeyStatus?: boolean
   createdAt?: Date | string
 }
 
@@ -345,6 +362,7 @@ export type ProjectUpdateManyMutationInput = {
   platform?: Prisma.StringFieldUpdateOperationsInput | string
   useCase?: Prisma.StringFieldUpdateOperationsInput | string
   apiKey?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationKeyStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -355,6 +373,7 @@ export type ProjectUncheckedUpdateManyInput = {
   useCase?: Prisma.StringFieldUpdateOperationsInput | string
   apiKey?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.IntFieldUpdateOperationsInput | number
+  verificationKeyStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -375,6 +394,7 @@ export type ProjectCountOrderByAggregateInput = {
   useCase?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  verificationKeyStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -390,6 +410,7 @@ export type ProjectMaxOrderByAggregateInput = {
   useCase?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  verificationKeyStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -400,6 +421,7 @@ export type ProjectMinOrderByAggregateInput = {
   useCase?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  verificationKeyStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -455,6 +477,7 @@ export type ProjectCreateWithoutUserInput = {
   platform: string
   useCase: string
   apiKey: string
+  verificationKeyStatus?: boolean
   createdAt?: Date | string
 }
 
@@ -464,6 +487,7 @@ export type ProjectUncheckedCreateWithoutUserInput = {
   platform: string
   useCase: string
   apiKey: string
+  verificationKeyStatus?: boolean
   createdAt?: Date | string
 }
 
@@ -503,6 +527,7 @@ export type ProjectScalarWhereInput = {
   useCase?: Prisma.StringFilter<"Project"> | string
   apiKey?: Prisma.StringFilter<"Project"> | string
   userId?: Prisma.IntFilter<"Project"> | number
+  verificationKeyStatus?: Prisma.BoolFilter<"Project"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Project"> | Date | string
 }
 
@@ -512,6 +537,7 @@ export type ProjectCreateManyUserInput = {
   platform: string
   useCase: string
   apiKey: string
+  verificationKeyStatus?: boolean
   createdAt?: Date | string
 }
 
@@ -520,6 +546,7 @@ export type ProjectUpdateWithoutUserInput = {
   platform?: Prisma.StringFieldUpdateOperationsInput | string
   useCase?: Prisma.StringFieldUpdateOperationsInput | string
   apiKey?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationKeyStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -529,6 +556,7 @@ export type ProjectUncheckedUpdateWithoutUserInput = {
   platform?: Prisma.StringFieldUpdateOperationsInput | string
   useCase?: Prisma.StringFieldUpdateOperationsInput | string
   apiKey?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationKeyStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -538,6 +566,7 @@ export type ProjectUncheckedUpdateManyWithoutUserInput = {
   platform?: Prisma.StringFieldUpdateOperationsInput | string
   useCase?: Prisma.StringFieldUpdateOperationsInput | string
   apiKey?: Prisma.StringFieldUpdateOperationsInput | string
+  verificationKeyStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -550,6 +579,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   useCase?: boolean
   apiKey?: boolean
   userId?: boolean
+  verificationKeyStatus?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -561,6 +591,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   useCase?: boolean
   apiKey?: boolean
   userId?: boolean
+  verificationKeyStatus?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -572,6 +603,7 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   useCase?: boolean
   apiKey?: boolean
   userId?: boolean
+  verificationKeyStatus?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
@@ -583,10 +615,11 @@ export type ProjectSelectScalar = {
   useCase?: boolean
   apiKey?: boolean
   userId?: boolean
+  verificationKeyStatus?: boolean
   createdAt?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "platform" | "useCase" | "apiKey" | "userId" | "createdAt", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "platform" | "useCase" | "apiKey" | "userId" | "verificationKeyStatus" | "createdAt", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -609,6 +642,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     useCase: string
     apiKey: string
     userId: number
+    verificationKeyStatus: boolean
     createdAt: Date
   }, ExtArgs["result"]["project"]>
   composites: {}
@@ -1040,6 +1074,7 @@ export interface ProjectFieldRefs {
   readonly useCase: Prisma.FieldRef<"Project", 'String'>
   readonly apiKey: Prisma.FieldRef<"Project", 'String'>
   readonly userId: Prisma.FieldRef<"Project", 'Int'>
+  readonly verificationKeyStatus: Prisma.FieldRef<"Project", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Project", 'DateTime'>
 }
     
