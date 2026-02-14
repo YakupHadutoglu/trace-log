@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../config/prisma';
 import crypto from 'crypto';
 
-import { newProjectService, apiKeyVerifiedService } from '../services/project.service';
+import { newProjectService, apiKeyVerifiedService , getAllProjectService } from '../services/project.service';
 
 
 export const createProject = async (req: Request, res: Response) => {
@@ -55,6 +55,19 @@ export const createProject = async (req: Request, res: Response) => {
     }
 }
 
+export const getAllProject = async (req: Request , res: Response) => {
+    try {
+        const userId = Number((req as any).user.id);
+        if (!userId) return res.status(401).json({ message: 'Authorization not found' });
+        const allProject = await getAllProjectService(userId);
+        console.log(allProject);
+        res.status(200).json({ allProject });
+    } catch (error) {
+        console.log('An error was encountered while fetching all projects' , error);
+        res.status(500).json({ message: 'internal server error' , error})
+    }
+}
+
 export const apiKeyVerifiedProject = async (req: Request, res: Response) => {
     try {
 
@@ -91,3 +104,4 @@ export const apiKeyVerifiedProject = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+

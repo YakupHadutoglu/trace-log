@@ -9,6 +9,7 @@ import { redisClient } from 'config/redis';
 import { throwDeprecation } from 'process';
 
 import * as encryption from  '../utils/encryption'
+import { describe } from 'zod/v4/core';
 
 const limit = env.PROJECT_LIMIT || 3; // Default to 3 if not set
 
@@ -66,6 +67,18 @@ export const newProjectService = async (userId: number , name: string, platform:
     };
 }
 
+export const getAllProjectService = async (id: number) => {
+    const allProject = await prisma.project.findMany({
+        where: {
+            userId: id
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+    return allProject;
+}
+
 export const apiKeyVerifiedService = async (projectId: number, userId: number , apiKey:string): Promise<boolean> => {
     const project = await prisma.project.findUnique({
         where: {
@@ -80,7 +93,7 @@ export const apiKeyVerifiedService = async (projectId: number, userId: number , 
     if (!project) throw new Error("api key not found");
 
     if (project.userId !== userId) {
-        throw new Error("UNAUTHORIZED_ACCESS"); 
+        throw new Error("UNAUTHORIZED_ACCESS");
     }
 
     const decryptedDbKey = encryption.decryptApiKey(project.apiKey);
