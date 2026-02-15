@@ -19,7 +19,6 @@ declare global {
 export const apiKeyVerifiedMd = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.project) {
-            // Eğer buraya proje olmadan geldiyse, önceki middleware işini yapamamış demektir.
             return res.status(500).json({ message: 'Server Error: Project context missing.' });
         }
         if (req.project.verificationKeyStatus === false) return res.status(401).json({ message: 'apiKey in not verified , api key verifided necessary' });

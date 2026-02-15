@@ -79,6 +79,15 @@ export const getAllProjectService = async (id: number) => {
     return allProject;
 }
 
+export const getProjectService = async (projectId: number) => {
+    const project = await prisma.project.findUnique({
+        where: {
+            id: projectId
+        }
+    });
+    return project;
+}
+
 export const apiKeyVerifiedService = async (projectId: number, userId: number , apiKey:string): Promise<boolean> => {
     const project = await prisma.project.findUnique({
         where: {

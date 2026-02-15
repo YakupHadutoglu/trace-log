@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../config/prisma';
 import crypto from 'crypto';
 
-import { newProjectService, apiKeyVerifiedService , getAllProjectService } from '../services/project.service';
+import { newProjectService, apiKeyVerifiedService, getAllProjectService, getProjectService } from '../services/project.service';
 
 
 export const createProject = async (req: Request, res: Response) => {
@@ -55,7 +55,7 @@ export const createProject = async (req: Request, res: Response) => {
     }
 }
 
-export const getAllProject = async (req: Request , res: Response) => {
+export const getAllProject = async (req: Request, res: Response) => {
     try {
         const userId = Number((req as any).user.id);
         if (!userId) return res.status(401).json({ message: 'Authorization not found' });
@@ -63,8 +63,32 @@ export const getAllProject = async (req: Request , res: Response) => {
         console.log(allProject);
         res.status(200).json({ allProject });
     } catch (error) {
-        console.log('An error was encountered while fetching all projects' , error);
-        res.status(500).json({ message: 'internal server error' , error})
+        console.log('An error was encountered while fetching all projects', error);
+        res.status(500).json({ message: 'internal server error', error })
+    }
+}
+
+export const getProject = async (req: Request, res: Response) => {
+    try {
+        const projectId = Number(req.params.projectId);
+        const userId = Number((req as any).user.id);
+
+
+        if (!projectId) return res.status(404).json({ message: 'Project not found!' });
+
+        const project = await getProjectService(projectId);
+        console.log(projectId);
+        console.log(userId);
+        console.log(project);
+
+        if (project?.userId !== userId) return res.status(403).json({ message: 'You cannot access someone else"s project' });
+
+        console.log(project, 'Current selected individual project content');
+        res.status(200).json({ project, message: 'Current selected individual project content' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error', error })
     }
 }
 
