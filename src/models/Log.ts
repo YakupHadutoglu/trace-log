@@ -1,7 +1,4 @@
-import { requireAuth } from 'middlewares/auth';
 import mongoose, { Schema, Document } from 'mongoose';
-import { required } from 'zod/v4/core/util.cjs';
-
 
 export interface ILog extends Document {
     projectId: string;
