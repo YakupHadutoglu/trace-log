@@ -37,4 +37,34 @@ export class LogService {
         });
         return newLog;
     }
+
+    static async getProjectLogs(projectId: string, page: number = 1, limit: number = 50, level?: string) {
+        const query: any = { projectId: projectId };
+
+        if (level) {
+            query.level = level;
+        }
+
+        const skip = (page - 1) * limit;
+
+        // 3. Paralel olarak hem logları çekip hem de toplam sayıyı hesaplıyoruz
+        const [logs, totalCount] = await Promise.all([
+            LogModel.find(query)
+                .sort({ timestamp: -1 })
+                .skip(skip)
+                .limit(limit)
+                .lean(), 
+            LogModel.countDocuments(query)
+        ]);
+
+        return {
+            logs,
+            pagination: {
+                totalLogs: totalCount,
+                currentPage: page,
+                totalPages: Math.ceil(totalCount / limit),
+                limit: limit
+            }
+        };
+    }
 }

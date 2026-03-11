@@ -25,6 +25,8 @@ export const sanitizeObject = (object: any): any => {
 };
 
 export const sanitizeRequest = (req: Request, res: Response, next: NextFunction) => {
+    if (req.originalUrl.startsWith('/log')) return next();
+
     if (req.body) req.body = sanitizeObject(req.body); //! body safe
 
     if (req.query) {

@@ -36,3 +36,25 @@ export const ingestLog = async (req: Request, res: Response) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
+
+export const getLogs = async (req: Request, res: Response) => {
+    try {
+        const projectId = req.params.projectId;
+
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 50;
+        const level = req.query.level as string;
+
+        const logData = await LogService.getProjectLogs(projectId, page, limit, level);
+
+        return res.status(200).json({
+            success: true,
+            data: logData.logs,
+            pagination: logData.pagination
+        });
+
+    } catch (error) {
+        console.error('[Get Logs Error]:', error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error fetching logs' });
+    }
+};
