@@ -18,7 +18,7 @@ export class LogService {
         const projectIdNum = parseInt(payload.projectId, 10);
         const project = await prisma.project.findUnique({
             where: {
-                id: projectIdNum
+                publicId: payload.projectId
             }
         });
 
@@ -29,7 +29,7 @@ export class LogService {
         if (cleanApiKey !== decryptedDbKey) throw new Error('INVALID_APII_KEY');
 
         const newLog = await LogModel.create({
-            projectId: project.id.toString(),
+            projectId: project.publicId,
             level: payload.level,
             message: payload.message,
             metadata: payload.metadata || {},
@@ -47,13 +47,12 @@ export class LogService {
 
         const skip = (page - 1) * limit;
 
-        // 3. Paralel olarak hem logları çekip hem de toplam sayıyı hesaplıyoruz
         const [logs, totalCount] = await Promise.all([
             LogModel.find(query)
                 .sort({ timestamp: -1 })
                 .skip(skip)
                 .limit(limit)
-                .lean(), 
+                .lean(),
             LogModel.countDocuments(query)
         ]);
 

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { LogService } from 'services/log.service';
+import { AnalyticsService } from 'services/analytics.service';
 
 export const ingestLog = async (req: Request, res: Response) => {
     try {
@@ -39,7 +40,7 @@ export const ingestLog = async (req: Request, res: Response) => {
 
 export const getLogs = async (req: Request, res: Response) => {
     try {
-        const projectId = req.params.projectId;
+        const projectId = req.params.publicId;
 
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 50;
@@ -58,3 +59,19 @@ export const getLogs = async (req: Request, res: Response) => {
         return res.status(500).json({ success: false, message: 'Internal Server Error fetching logs' });
     }
 };
+
+export const getStats = async (req: Request, res: Response) => {
+    try {
+        const publicId = req.params.publicId;
+
+        const statsData = await AnalyticsService.getProjectStats(publicId);
+
+        return res.status(200).json({
+            success: true,
+            data: statsData
+        });
+    } catch (error) {
+        console.error('[Get Stats Error]:', error);
+        return res.status(500).json({ success: false, message: 'Internal Server Error fetching stats' });
+    }
+}

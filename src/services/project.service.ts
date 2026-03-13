@@ -32,13 +32,16 @@ export const getProjectCount = async (userId: number): Promise<Number> => {
     return count;
 }
 
-export const newProjectService = async (userId: number , name: string, platform: string, useCase: string, verificationKeyStatus: boolean) => {
+export const newProjectService = async (userId: number , name: string, platform: string, useCase: string) => {
     const currentProjectCount = await getProjectCount(userId);
     if (currentProjectCount >= limit) throw new Error("LIMIT_REACHED");
 
     const randomPart = crypto.randomBytes(16).toString('hex');
     const rawApiKey = `tracelog_sk_${randomPart}`;
     const encryptedApiKey = encryptApiKey(rawApiKey);
+
+    const randomPublicId = crypto.randomBytes(5).toString('hex');
+    const newPublicId = `prj_${randomPublicId}`;
 
     const newProject = await prisma.project.create({
         data: {
@@ -48,6 +51,7 @@ export const newProjectService = async (userId: number , name: string, platform:
             apiKey: encryptedApiKey,
             userId: userId,
             verificationKeyStatus: false,
+            publicId: newPublicId,
         }
     });
 
@@ -88,10 +92,10 @@ export const getProjectService = async (projectId: number) => {
     return project;
 }
 
-export const apiKeyVerifiedService = async (projectId: number, userId: number , apiKey:string): Promise<boolean> => {
+export const apiKeyVerifiedService = async (publicId: string, userId: number , apiKey:string): Promise<boolean> => {
     const project = await prisma.project.findUnique({
         where: {
-            id: projectId
+            publicId: publicId
         },
         select: {
             apiKey: true,
@@ -113,7 +117,7 @@ export const apiKeyVerifiedService = async (projectId: number, userId: number , 
 
     const keyStatusUpdate = await prisma.project.update({
         where: {
-            id: projectId,
+            publicId: publicId,
         },
         data: {
             verificationKeyStatus: true

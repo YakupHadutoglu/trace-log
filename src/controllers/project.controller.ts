@@ -14,24 +14,26 @@ export const createProject = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Name, platform and useCase required." });
         }
 
-        const result = await newProjectService(userId, name, platform, useCase, false);
+        const result = await newProjectService(userId, name, platform, useCase);
 
         console.log(`Project created for user ${userId}. Key: ${result.rawApiKey.substring(0, 15)}...`);
         console.log({
             project: {
                 id: result.newProject.id,
+                publicId: result.newProject.publicId,
                 name: result.newProject.name,
                 platform: result.newProject.platform,
                 useCase: result.newProject.useCase,
                 createdAt: result.newProject.createdAt,
                 apiKey: result.rawApiKey,
-                verificationKeyStatus: false
+                verificationKeyStatus: false,
             }
         });
         res.status(201).json({
             message: 'Project created successfully.',
             project: {
                 id: result.newProject.id,
+                publicId: result.newProject.publicId,
                 name: result.newProject.name,
                 platform: result.newProject.platform,
                 useCase: result.newProject.useCase,
@@ -94,15 +96,15 @@ export const getProject = async (req: Request, res: Response) => {
 
 export const apiKeyVerifiedProject = async (req: Request, res: Response) => {
     try {
-
         const { apiKey } = req.body;
-        const projectId = Number(req.params.projectId);
         const userId = Number((req as any).user.id);
 
-        if (!projectId || !apiKey) return res.status(400).json('apiKey is not defined');
-        if (!projectId || Number.isNaN(projectId)) return res.status(400).json('project id is not defined or invalid');
+        const targetId = req.params.publicId || req.params.projectId;
 
-        const apiKeyVerifieService = await apiKeyVerifiedService(projectId, userId, apiKey);
+        if (!apiKey) return res.status(400).json({ message: 'apiKey is not defined in body' });
+        if (!targetId) return res.status(400).json({ message: 'Project ID is missing from URL' });
+
+        const apiKeyVerifieService = await apiKeyVerifiedService(targetId as string, userId, apiKey);
 
         console.log('apiKey verified successfully');
 

@@ -4,10 +4,12 @@ import { ingestLog, getLogs} from '../controllers/log.controller';
 import { requireAuth } from '../middlewares/auth';
 import { verifyToken } from '../middlewares/requireEmailVerified';
 import { requireProjectOwner } from '../middlewares/requireProjectOwner';
+import { getStats } from '../controllers/log.controller';
 
 const router = Router();
 
 router.post('/ingest', ingestLog);
-router.get('/:projectId', requireAuth, verifyToken, requireProjectOwner, getLogs);
+router.get('/:publicId/stats', requireAuth, verifyToken, requireProjectOwner, getStats);
+router.get('/:publicId', requireAuth, verifyToken, requireProjectOwner, getLogs);
 
 export default router;
