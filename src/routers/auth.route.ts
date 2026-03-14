@@ -6,6 +6,7 @@ import { loginSchema } from '../schemas/login.schema';
 import { requireAuth } from '../middlewares/auth';
 import noCache from '../middlewares/noCache';
 import { verifyToken } from '../middlewares/requireEmailVerified';
+import { forgotPassword, resetPassword } from '../controllers/auth.controller';
 
 const router: Router = Router();
 
@@ -13,6 +14,8 @@ router.post('/register', validate(registerSchema) , AuthController.register);
 router.post('/login', validate(loginSchema) , AuthController.login);
 router.post('/refresh', AuthController.refresh);
 router.post('/logout', AuthController.logout);
-router.patch('/change-password', noCache , requireAuth, AuthController.changePassword);
+router.patch('/change-password', noCache, requireAuth, AuthController.changePassword);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 
 export default router;

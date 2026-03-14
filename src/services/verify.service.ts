@@ -49,8 +49,38 @@ export default class VerifyService {
             email: user.email,
             approvedStatus: user.approvedStatus,
             isPhoneVerified: user.isPhoneVerified
-            
+
         });
         return { sessionData, user }
+    }
+    static async sendResetPasswordEmail(email: string, token: string): Promise<void> {
+        const link = `${env.API_URL || 'http://localhost:3001'}/auth/reset-password?token=${token}`;
+
+        const mailOptions = {
+            from: `"Log Trace Service" <${env.hostName}>`,
+            to: email,
+            subject: 'Şifre Sıfırlama İsteği',
+            html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: auto;">
+                    <h2>Şifre Sıfırlama Talebi</h2>
+                    <p>Hesabınız için bir şifre sıfırlama talebi aldık. Şifrenizi yenilemek için aşağıdaki butona tıklayın:</p>
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${link}" style="background-color: #4CAF50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Şifremi Sıfırla</a>
+                    </div>
+                    <p>Bu bağlantı 30 dakika boyunca geçerlidir. Eğer bu talebi siz yapmadıysanız, bu e-postayı güvenle görmezden gelebilirsiniz.</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                    <p style="font-size: 0.8em; color: #777;">Bağlantı çalışmıyorsa bu adresi tarayıcınıza yapıştırın: <br> ${link}</p>
+                </div>
+            `,
+        };
+
+        try {
+            const info = await transporter.sendMail(mailOptions);
+            console.log(`[Reset Mail] Sent to ${email}: ${info.messageId}`);
+            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        } catch (error) {
+            console.error(`[Reset Mail Error] Failed to send email to ${email}:`, error);
+            throw new Error('E-posta gönderimi sırasında bir hata oluştu.');
+        }
     }
 }

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import { prisma } from '../config/prisma';
 import { redisClient } from '../config/redis';
 import env from '../config/env';
@@ -150,6 +151,47 @@ export class AuthService {
                 password: hashedPassword
             }
         });
+    }
+
+    private static getResetKey(email: string) { return `password-reset:${email}` };
+    private static getTokenKey(token: string) { return `reset-token:${token}` };
+
+    static async requestPasswordReset(email: string) {
+        const user = await this.findUserByEmail(email);
+
+        if (!user) throw new Error('USER_NOT_FOUND');
+
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const expriretionSeconds = 1800; //* 30 minutes
+
+        await redisClient.set(this.getResetKey(email), resetToken, `EX`, expriretionSeconds);
+        await redisClient.set(this.getTokenKey(resetToken), email, 'EX', expriretionSeconds);
+
+        await VerifyService.sendResetPasswordEmail(email, resetToken);
+
+        return resetToken;
+    }
+
+    static async resetPasswordWithToken(token: string, newPassword: string) {
+        const email = await redisClient.get(this.getTokenKey(token));
+
+        if (!email) throw new Error('INVALID_OR_EXPIRED_TOKEN');
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await prisma.user.update({
+            where: {
+                email: email
+            },
+            data: {
+                password: hashedPassword
+            }
+        });
+
+        await redisClient.del(this.getResetKey(email));
+        await redisClient.del(this.getTokenKey(token));
+
+        return true;
     }
 }
 

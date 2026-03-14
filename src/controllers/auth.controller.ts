@@ -5,6 +5,8 @@ import { COOKIE_OPTIONS } from "../config/cookie";
 import { access } from "fs";
 import { prisma } from "../config/prisma";
 import { smsService } from "services/sms.service";
+import { success } from "zod";
+import { requireAuth } from "middlewares/auth";
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -122,7 +124,7 @@ export const changePassword = async (req: Request, res: Response) => {
 
                 counter--;
 
-                if(counter < 0) {
+                if (counter < 0) {
                     clearInterval(logoutTimer);
                     try {
                         await AuthService.deleteSession(currentRefreshToken);
@@ -144,3 +146,58 @@ export const changePassword = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Internal server error." });
     }
 }
+
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) return res.status(400).json({ message: "Email is required!" });
+
+        const resetToken = await AuthService.requestPasswordReset(email);
+
+        //TODO: email kısmı buraya gelecek
+
+        console.log(`[DEBUG] ${email} için sıfırlama tokenı: ${resetToken}`);
+
+        return res.status(200).json({
+            success: true,
+            message: 'If the email address is registered in the system, a password reset link will be sent.'
+        });
+    } catch (error: any) {
+        console.error('Forgot Password Error:', error.message);
+
+        if (error.message === 'USER_NOT_FOUND') {
+            return res.status(200).json({
+                success: true,
+                message: 'Eğer e-posta adresi sistemde kayıtlıysa, şifre sıfırlama bağlantısı gönderilecektir.'
+            });
+        }
+
+        res.status(500).json({ success: false, message: 'İşlem sırasında bir hata oluştu.' });
+    }
+}
+
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { token, newPassword } = req.body;
+
+        if (!token || !newPassword) return res.status(400).json({ message: "Token and new password are required!" });
+
+        await AuthService.resetPasswordWithToken(token, newPassword);
+
+        res.status(200).json({
+            success: true,
+            message: 'Your password has been successfully updated. You can now log in with your new password.'
+        });
+    } catch (error: any) {
+        console.error('Reset Password Error:', error.message);
+
+        if (error.message === 'INVALID_OR_EXPIRED_TOKEN') {
+            return res.status(400).json({ message: 'Invalid or expired reset link.' });
+        }
+
+        res.status(500).json({ success: false, message: 'An error occurred while updating the password.' });
+    }
+}
+
