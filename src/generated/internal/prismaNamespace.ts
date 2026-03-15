@@ -391,7 +391,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  Project: 'Project'
+  Project: 'Project',
+  AlarmRule: 'AlarmRule'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "project"
+    modelProps: "user" | "project" | "alarmRule"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -559,6 +560,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AlarmRule: {
+      payload: Prisma.$AlarmRulePayload<ExtArgs>
+      fields: Prisma.AlarmRuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AlarmRuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AlarmRuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>
+        }
+        findFirst: {
+          args: Prisma.AlarmRuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AlarmRuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>
+        }
+        findMany: {
+          args: Prisma.AlarmRuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>[]
+        }
+        create: {
+          args: Prisma.AlarmRuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>
+        }
+        createMany: {
+          args: Prisma.AlarmRuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AlarmRuleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>[]
+        }
+        delete: {
+          args: Prisma.AlarmRuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>
+        }
+        update: {
+          args: Prisma.AlarmRuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>
+        }
+        deleteMany: {
+          args: Prisma.AlarmRuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AlarmRuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AlarmRuleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>[]
+        }
+        upsert: {
+          args: Prisma.AlarmRuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AlarmRulePayload>
+        }
+        aggregate: {
+          args: Prisma.AlarmRuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAlarmRule>
+        }
+        groupBy: {
+          args: Prisma.AlarmRuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlarmRuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AlarmRuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AlarmRuleCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -629,6 +704,27 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+export const AlarmRuleScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  name: 'name',
+  conditionSeverity: 'conditionSeverity',
+  conditionMessage: 'conditionMessage',
+  sendEmail: 'sendEmail',
+  sendSMS: 'sendSMS',
+  sendDiscord: 'sendDiscord',
+  discordWebHookUrl: 'discordWebHookUrl',
+  targetEmail: 'targetEmail',
+  targetPhone: 'targetPhone',
+  cooldownMinutes: 'cooldownMinutes',
+  createdAt: 'createdAt',
+  updateAt: 'updateAt',
+  userId: 'userId'
+} as const
+
+export type AlarmRuleScalarFieldEnum = (typeof AlarmRuleScalarFieldEnum)[keyof typeof AlarmRuleScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -643,6 +739,14 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 
@@ -802,6 +906,7 @@ export interface PrismaClientOptions {
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   project?: Prisma.ProjectOmit
+  alarmRule?: Prisma.AlarmRuleOmit
 }
 
 /* Types for Logging */

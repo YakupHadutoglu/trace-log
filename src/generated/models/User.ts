@@ -261,6 +261,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   projectCount?: Prisma.IntFilter<"User"> | number
   projects?: Prisma.ProjectListRelationFilter
+  alarmRules?: Prisma.AlarmRuleListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -275,6 +276,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   projectCount?: Prisma.SortOrder
   projects?: Prisma.ProjectOrderByRelationAggregateInput
+  alarmRules?: Prisma.AlarmRuleOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -292,6 +294,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   projectCount?: Prisma.IntFilter<"User"> | number
   projects?: Prisma.ProjectListRelationFilter
+  alarmRules?: Prisma.AlarmRuleListRelationFilter
 }, "id" | "email" | "phoneNumber">
 
 export type UserOrderByWithAggregationInput = {
@@ -339,6 +342,7 @@ export type UserCreateInput = {
   createdAt?: Date | string
   projectCount?: number
   projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  alarmRules?: Prisma.AlarmRuleCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -353,6 +357,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   projectCount?: number
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  alarmRules?: Prisma.AlarmRuleUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -366,6 +371,7 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectCount?: Prisma.IntFieldUpdateOperationsInput | number
   projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  alarmRules?: Prisma.AlarmRuleUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -380,6 +386,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectCount?: Prisma.IntFieldUpdateOperationsInput | number
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  alarmRules?: Prisma.AlarmRuleUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -508,6 +515,20 @@ export type UserUpdateOneRequiredWithoutProjectsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProjectsInput, Prisma.UserUpdateWithoutProjectsInput>, Prisma.UserUncheckedUpdateWithoutProjectsInput>
 }
 
+export type UserCreateNestedOneWithoutAlarmRulesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAlarmRulesInput, Prisma.UserUncheckedCreateWithoutAlarmRulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAlarmRulesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAlarmRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAlarmRulesInput, Prisma.UserUncheckedCreateWithoutAlarmRulesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAlarmRulesInput
+  upsert?: Prisma.UserUpsertWithoutAlarmRulesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAlarmRulesInput, Prisma.UserUpdateWithoutAlarmRulesInput>, Prisma.UserUncheckedUpdateWithoutAlarmRulesInput>
+}
+
 export type UserCreateWithoutProjectsInput = {
   email: string
   name: string
@@ -518,6 +539,7 @@ export type UserCreateWithoutProjectsInput = {
   isPhoneVerified?: boolean
   createdAt?: Date | string
   projectCount?: number
+  alarmRules?: Prisma.AlarmRuleCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -531,6 +553,7 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   isPhoneVerified?: boolean
   createdAt?: Date | string
   projectCount?: number
+  alarmRules?: Prisma.AlarmRuleUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -559,6 +582,7 @@ export type UserUpdateWithoutProjectsInput = {
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectCount?: Prisma.IntFieldUpdateOperationsInput | number
+  alarmRules?: Prisma.AlarmRuleUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -572,6 +596,77 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectCount?: Prisma.IntFieldUpdateOperationsInput | number
+  alarmRules?: Prisma.AlarmRuleUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAlarmRulesInput = {
+  email: string
+  name: string
+  surname: string
+  password: string
+  approvedStatus?: boolean
+  phoneNumber: string
+  isPhoneVerified?: boolean
+  createdAt?: Date | string
+  projectCount?: number
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAlarmRulesInput = {
+  id?: number
+  email: string
+  name: string
+  surname: string
+  password: string
+  approvedStatus?: boolean
+  phoneNumber: string
+  isPhoneVerified?: boolean
+  createdAt?: Date | string
+  projectCount?: number
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAlarmRulesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAlarmRulesInput, Prisma.UserUncheckedCreateWithoutAlarmRulesInput>
+}
+
+export type UserUpsertWithoutAlarmRulesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAlarmRulesInput, Prisma.UserUncheckedUpdateWithoutAlarmRulesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAlarmRulesInput, Prisma.UserUncheckedCreateWithoutAlarmRulesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAlarmRulesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAlarmRulesInput, Prisma.UserUncheckedUpdateWithoutAlarmRulesInput>
+}
+
+export type UserUpdateWithoutAlarmRulesInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  surname?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAlarmRulesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  surname?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  approvedStatus?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  isPhoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectCount?: Prisma.IntFieldUpdateOperationsInput | number
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -581,10 +676,12 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
 
 export type UserCountOutputType = {
   projects: number
+  alarmRules: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | UserCountOutputTypeCountProjectsArgs
+  alarmRules?: boolean | UserCountOutputTypeCountAlarmRulesArgs
 }
 
 /**
@@ -604,6 +701,13 @@ export type UserCountOutputTypeCountProjectsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.ProjectWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAlarmRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AlarmRuleWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -617,6 +721,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   projectCount?: boolean
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
+  alarmRules?: boolean | Prisma.User$alarmRulesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -662,6 +767,7 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "surname" | "password" | "approvedStatus" | "phoneNumber" | "isPhoneVerified" | "createdAt" | "projectCount", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   projects?: boolean | Prisma.User$projectsArgs<ExtArgs>
+  alarmRules?: boolean | Prisma.User$alarmRulesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -671,6 +777,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     projects: Prisma.$ProjectPayload<ExtArgs>[]
+    alarmRules: Prisma.$AlarmRulePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1078,6 +1185,7 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   projects<T extends Prisma.User$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  alarmRules<T extends Prisma.User$alarmRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$alarmRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AlarmRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1526,6 +1634,30 @@ export type User$projectsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.ProjectScalarFieldEnum | Prisma.ProjectScalarFieldEnum[]
+}
+
+/**
+ * User.alarmRules
+ */
+export type User$alarmRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AlarmRule
+   */
+  select?: Prisma.AlarmRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AlarmRule
+   */
+  omit?: Prisma.AlarmRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AlarmRuleInclude<ExtArgs> | null
+  where?: Prisma.AlarmRuleWhereInput
+  orderBy?: Prisma.AlarmRuleOrderByWithRelationInput | Prisma.AlarmRuleOrderByWithRelationInput[]
+  cursor?: Prisma.AlarmRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AlarmRuleScalarFieldEnum | Prisma.AlarmRuleScalarFieldEnum[]
 }
 
 /**

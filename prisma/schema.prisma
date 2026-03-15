@@ -26,6 +26,7 @@ model User {
   projects        Project[]
   createdAt       DateTime  @default(now())
   projectCount Int @default(0)
+  alarmRules AlarmRule[]    // User created alarm rules
 }
 
 model Project {
@@ -39,4 +40,36 @@ model Project {
   user      User     @relation(fields: [userId], references: [id])
   verificationKeyStatus Boolean @default(false)
   createdAt DateTime @default(now())
+}
+
+
+model AlarmRule {
+  id        Int    @id @default(autoincrement())
+  projectId String @unique  // ID of the project in MongoDB (Logs coming to this project will be scanned)
+  name      String          // Name of the rule (Ex: Critical Database Error)
+
+  // Filtering Conditions (for Room 2 -Rules Engine)
+  conditionSeverity String?  // Capture only logs at this level (Ex: CRITICAL)
+  conditionMessage  String?  // Capture if the following word appears in the message (Ex: "timeout")
+
+  // Distribution Channels (for Room 4 -Fan-Out)
+  sendEmail         Boolean  @default(false)
+  sendSMS           Boolean  @default(false)
+  sendDiscord       Boolean  @default(false)
+
+  // Destination Addresses
+  discordWebHookUrl String?  // Discord is a stupid link
+  targetEmail       String?  // If left blank, the system will use the user's primary email address.
+  targetPhone       String?  // If left blank, the system uses the user's primary phone number.
+
+  // Silencer /Spam Protection (for Room 3 -Throttling)
+  cooldownMinutes   Int @default(5) // After an alarm is triggered, ignore subsequent matches for this many minutes.
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  // relationships
+  userId  Int
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }

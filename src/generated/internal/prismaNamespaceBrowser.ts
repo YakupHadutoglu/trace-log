@@ -50,7 +50,8 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Project: 'Project'
+  Project: 'Project',
+  AlarmRule: 'AlarmRule'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -100,6 +101,27 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+export const AlarmRuleScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  name: 'name',
+  conditionSeverity: 'conditionSeverity',
+  conditionMessage: 'conditionMessage',
+  sendEmail: 'sendEmail',
+  sendSMS: 'sendSMS',
+  sendDiscord: 'sendDiscord',
+  discordWebHookUrl: 'discordWebHookUrl',
+  targetEmail: 'targetEmail',
+  targetPhone: 'targetPhone',
+  cooldownMinutes: 'cooldownMinutes',
+  createdAt: 'createdAt',
+  updateAt: 'updateAt',
+  userId: 'userId'
+} as const
+
+export type AlarmRuleScalarFieldEnum = (typeof AlarmRuleScalarFieldEnum)[keyof typeof AlarmRuleScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -114,4 +136,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
