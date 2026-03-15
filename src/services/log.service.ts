@@ -1,6 +1,7 @@
 import { prisma } from '../config/prisma';
 import { LogModel } from '../models/Log';
 import { encryptApiKey, decryptApiKey } from '../utils/encryption';
+import { AlarmService } from './alarm.service';
 
 interface CreateLogPayload {
     projectId: string;
@@ -35,6 +36,9 @@ export class LogService {
             metadata: payload.metadata || {},
             timestamp: new Date(payload.timestamp)
         });
+
+        AlarmService.processLogAndTriggerAlarms(newLog).catch(err => console.error('[LogService | AlarmService] alarm error - error:', err));
+
         return newLog;
     }
 
