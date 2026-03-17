@@ -1,6 +1,8 @@
 import { prisma } from '../config/prisma';
 import { redisClient } from '../config/redis';
 import { DiscordService } from './discord.service';
+import { AlarmEmailService } from './alarm-email.service';
+import { AlertSmsService } from './alert-sms.service';
 
 export class AlarmService {
     static async processLogAndTriggerAlarms(logData: any) {
@@ -24,6 +26,16 @@ export class AlarmService {
                 const disbatchTasks = [];
                 if (rule.sendDiscord && rule.discordWebHookUrl) {
                     disbatchTasks.push(DiscordService.sendAlert(rule.discordWebHookUrl, logData, rule.name));
+                }
+
+                //* Email sending in detailed HTML format.
+                if (rule.sendEmail && rule.targetEmail) {
+                    disbatchTasks.push(AlarmEmailService.sendAlert(rule.targetEmail, logData, rule.name));
+                }
+
+                //* SMS Distribution
+                if (rule.sendSMS && rule.targetPhone) {
+                    disbatchTasks.push(AlertSmsService.sendAlert(rule.targetPhone, logData, rule.name));
                 }
                 await Promise.allSettled(disbatchTasks);
 
