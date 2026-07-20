@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as smsController from '../controllers/sms.controller';
-import { requireAuth } from '../middlewares/auth'; // Auth is required because user ID is required
+import * as smsController from './sms.controller';
+import { requireAuth } from '../../middlewares/auth'; // Auth is required because user ID is required
 
 const router = Router();
 

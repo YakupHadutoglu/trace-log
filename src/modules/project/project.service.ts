@@ -1,5 +1,5 @@
-import { prisma } from '../config/prisma';
-import * as smsController from '../controllers/sms.controller';
+import { prisma } from '../../config/prisma';
+import * as smsController from '../sms/sms.controller';
 
 import { encryptApiKey } from 'utils/encryption';
 import crypto from 'crypto';
@@ -8,7 +8,7 @@ import env from 'config/env';
 import { redisClient } from 'config/redis';
 import { throwDeprecation } from 'process';
 
-import * as encryption from  '../utils/encryption'
+import * as encryption from  '../../utils/encryption'
 import { describe } from 'zod/v4/core';
 
 const limit = env.PROJECT_LIMIT || 3; // Default to 3 if not set

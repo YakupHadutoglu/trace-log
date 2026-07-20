@@ -1,10 +1,10 @@
 import nodemailer from 'nodemailer';
 import { v4 as uuidv4 } from 'uuid';
-import env from '../config/env';
-import { prisma } from '../config/prisma';
-import { redisClient } from '../config/redis';
-import { AuthService } from '../services/auth.service';
-import transporter from '../config/mail';
+import env from '../../config/env';
+import { prisma } from '../../config/prisma';
+import { redisClient } from '../../config/redis';
+import { AuthService } from '../auth/auth.service';
+import transporter from '../../config/mail';
 import { parse } from 'path';
 import { id } from 'zod/v4/locales';
 

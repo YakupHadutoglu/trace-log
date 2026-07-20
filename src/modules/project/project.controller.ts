@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { prisma } from '../config/prisma';
+import { prisma } from '../../config/prisma';
 import crypto from 'crypto';
 
-import { newProjectService, apiKeyVerifiedService, getAllProjectService, getProjectService } from '../services/project.service';
+import { newProjectService, apiKeyVerifiedService, getAllProjectService, getProjectService } from '../project/project.service';
 
 
 export const createProject = async (req: Request, res: Response) => {

@@ -8,7 +8,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 
-import router from './routers/index';
+import router from './routes';
 import noCache from './middlewares/noCache';
 import rateLimit from './lib/rateLimit';
 import { sanitizeRequest } from './middlewares/sanitizeRequest';

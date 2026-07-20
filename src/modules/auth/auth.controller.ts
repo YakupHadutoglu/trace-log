@@ -1,10 +1,10 @@
-import { AuthService } from "../services/auth.service";
+import { AuthService } from "../auth/auth.service";
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { COOKIE_OPTIONS } from "../config/cookie";
+import { COOKIE_OPTIONS } from "../../config/cookie";
 import { access } from "fs";
-import { prisma } from "../config/prisma";
-import { smsService } from "services/sms.service";
+import { prisma } from "../../config/prisma";
+import { smsService } from "../sms/sms.service";
 import { success } from "zod";
 import { requireAuth } from "middlewares/auth";
 

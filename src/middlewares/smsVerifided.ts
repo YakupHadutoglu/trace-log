@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { smsService } from '../services/sms.service'; 
+import { smsService } from '../modules/sms/sms.service';
 
 export const smsVerified = async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -1,5 +1,5 @@
-import transporter from '../config/mail';
-import env from '../config/env';
+import transporter from '../../config/mail';
+import env from '../../config/env';
 
 export class AlarmEmailService {
     //* When the rule is matched, it sends a detailed HTML error report to the specified e-mail.

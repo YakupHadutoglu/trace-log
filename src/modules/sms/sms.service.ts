@@ -1,5 +1,5 @@
-import { redisClient } from '../config/redis';
-import env from '../config/env';
+import { redisClient } from '../../config/redis';
+import env from '../../config/env';
 
 const SMS_EXPIRY = env.SMS_EXPIRY;
 

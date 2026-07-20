@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { LogService } from 'services/log.service';
-import { AnalyticsService } from 'services/analytics.service';
+import { LogService } from '../log/log.service';
+import { AnalyticsService } from '../project/analytics.service';
 
 export const ingestLog = async (req: Request, res: Response) => {
     try {

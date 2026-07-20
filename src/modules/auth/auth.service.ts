@@ -2,14 +2,14 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import crypto from 'crypto';
-import { prisma } from '../config/prisma';
-import { redisClient } from '../config/redis';
-import env from '../config/env';
-import { CreateUserDto } from '../types/user';
-import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/token';
+import { prisma } from '../../config/prisma';
+import { redisClient } from '../../config/redis';
+import env from '../../config/env';
+import { CreateUserDto } from '../../types/user';
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../utils/token';
 import { json } from 'body-parser';
-import { isUserLocked, increaseFailedAttempts, resetFailedAttempts } from '../utils/lockout';
-import VerifyService from './verify.service';
+import { isUserLocked, increaseFailedAttempts, resetFailedAttempts } from '../../utils/lockout';
+import VerifyService from '../auth/verify.service';
 
 export class AuthService {
     static async findUserByEmail(email: string) {

@@ -1,7 +1,7 @@
-import { prisma } from '../config/prisma';
-import { LogModel } from '../models/Log';
-import { encryptApiKey, decryptApiKey } from '../utils/encryption';
-import { AlarmService } from './alarm.service';
+import { prisma } from '../../config/prisma';
+import { LogModel } from '../../models/Log';
+import { encryptApiKey, decryptApiKey } from '../../utils/encryption';
+import { AlarmService } from '../alarm/alarm.service';
 
 interface CreateLogPayload {
     projectId: string;

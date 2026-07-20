@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { prisma } from "../config/prisma";
-import { smsService } from "../services/sms.service"; // Servis importu
-import { AuthService } from "../services/auth.service";
+import { prisma } from "../../config/prisma";
+import { smsService } from "../sms/sms.service"; 
+import { AuthService } from "../auth/auth.service";
 
 export const sendPhoneVerification = async (req: Request, res: Response) => {
     try {

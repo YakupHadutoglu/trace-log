@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import VerifyService from '../services/verify.service';
-import { AuthService } from "../services/auth.service";
-import env from "../config/env";
+import VerifyService from '../auth/verify.service';
+import { AuthService } from "../auth/auth.service";
+import env from "../../config/env";
 import { access } from "node:fs";
 
 export const confirmVertification = async (req: Request, res: Response) => {

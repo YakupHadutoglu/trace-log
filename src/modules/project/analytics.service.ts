@@ -1,4 +1,4 @@
-import { LogModel } from '../models/Log';
+import { LogModel } from '../../models/Log';
 
 export class AnalyticsService {
     static async getProjectStats(publicId: string) {

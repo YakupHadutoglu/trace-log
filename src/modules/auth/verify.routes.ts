@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as VerifyController from '../controllers/verify.controller';
-import noCache from '../middlewares/noCache';
+import * as VerifyController from '../auth/verify.controller';
+import noCache from '../../middlewares/noCache';
 
 const router: Router = Router();
 

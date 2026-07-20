@@ -1,8 +1,8 @@
-import { prisma } from '../config/prisma';
-import { redisClient } from '../config/redis';
-import { DiscordService } from './discord.service';
-import { AlarmEmailService } from './alarm-email.service';
-import { AlertSmsService } from './alert-sms.service';
+import { prisma } from '../../config/prisma';
+import { redisClient } from '../../config/redis';
+import { DiscordService } from '../alarm/discord.service';
+import { AlarmEmailService } from '../alarm/alarm-email.service';
+import { AlertSmsService } from '../alarm/alert-sms.service';
 
 export class AlarmService {
     static async processLogAndTriggerAlarms(logData: any) {
