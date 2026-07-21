@@ -8,6 +8,10 @@ const transporter = nodemailer.createTransport({
     auth: {
         user: env.hostName,
         pass: env.hostPassword
-    }
+    },
+    pool: true,
+    maxConnections: 3,
+    maxMessages: 100,
+    rateLimit: 10
 });
 export default transporter;

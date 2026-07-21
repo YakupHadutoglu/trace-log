@@ -127,6 +127,10 @@ export const apiKeyVerifiedProject = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "The API Key you entered is incorrect." });
         }
 
+        if (error.message.includes("Security Violation")) {
+            return res.status(410).json({ message: error.message });
+        }
+        
         res.status(500).json({ message: 'Internal server error' });
     }
 }

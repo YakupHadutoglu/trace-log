@@ -26,7 +26,7 @@ export default class VerifyService {
                 <p>Teşekkürler!</p>`,
         }
 
-        const info = await transporter.sendMail(mailOptions);
+        const info = await transporter.sendMail(mailOptions) as any;
         console.log(`veritification email sent to ${user.email}`);
         console.log(`Vertificatiomn email sent: %s, ${info.messageId}`);
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
@@ -75,7 +75,7 @@ export default class VerifyService {
         };
 
         try {
-            const info = await transporter.sendMail(mailOptions);
+            const info = await transporter.sendMail(mailOptions) as any;
             console.log(`[Reset Mail] Sent to ${email}: ${info.messageId}`);
             console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
         } catch (error) {

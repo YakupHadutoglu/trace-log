@@ -8,7 +8,7 @@ import env from 'config/env';
 import { redisClient } from 'config/redis';
 import { throwDeprecation } from 'process';
 
-import * as encryption from  '../../utils/encryption'
+import * as encryption from '../../utils/encryption'
 import { describe } from 'zod/v4/core';
 
 const limit = env.PROJECT_LIMIT || 3; // Default to 3 if not set
@@ -32,7 +32,7 @@ export const getProjectCount = async (userId: number): Promise<Number> => {
     return count;
 }
 
-export const newProjectService = async (userId: number , name: string, platform: string, useCase: string) => {
+export const newProjectService = async (userId: number, name: string, platform: string, useCase: string) => {
     const currentProjectCount = await getProjectCount(userId);
     if (currentProjectCount >= limit) throw new Error("LIMIT_REACHED");
 
@@ -64,8 +64,24 @@ export const newProjectService = async (userId: number , name: string, platform:
         }
     });
 
-    const keyExists = await redisClient.exists(getCacheKey(userId));
-    if(keyExists) await redisClient.incr(getCacheKey(userId));
+    const cacheKey = getCacheKey(userId);
+    const keyExists = await redisClient.exists(cacheKey);
+    if (keyExists) {
+        await redisClient.incr(cacheKey);
+        await redisClient.expire(cacheKey, 180);
+    } else {
+        const updatedUser = await prisma.user.findUnique({
+            where: {
+                id: userId
+            },
+            select: {
+                projectCount: true
+            }
+        });
+        if (updatedUser) {
+            await redisClient.set(cacheKey, updatedUser.projectCount.toString(), 'EX', 180);
+        }
+    }
     return {
         newProject, rawApiKey
     };
@@ -92,7 +108,7 @@ export const getProjectService = async (projectId: number) => {
     return project;
 }
 
-export const apiKeyVerifiedService = async (publicId: string, userId: number , apiKey:string): Promise<boolean> => {
+export const apiKeyVerifiedService = async (publicId: string, userId: number, apiKey: string): Promise<boolean> => {
     const project = await prisma.project.findUnique({
         where: {
             publicId: publicId
@@ -111,9 +127,48 @@ export const apiKeyVerifiedService = async (publicId: string, userId: number , a
 
     const decryptedDbKey = encryption.decryptApiKey(project.apiKey);
 
+    const attempKey = `project:${publicId}:verify_attemps`;
+
+
     if (apiKey !== decryptedDbKey) {
-        throw new Error("The API key you entered is not the same as your current API key.");
+
+        const attempts = await redisClient.incr(attempKey);
+
+        if (attempts === 1) {
+            await redisClient.expire(attempKey, 3600)
+        }
+
+        if (attempts >= 5) {
+            await prisma.project.delete({
+                where: {
+                    publicId: publicId
+                }
+            });
+
+            await prisma.user.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    projectCount: {
+                        decrement: 1
+                    }
+                }
+            });
+
+            const keyExists = await redisClient.exists(getCacheKey(userId));
+
+            if (keyExists) await redisClient.decr(getCacheKey(userId));
+
+            await redisClient.del(attempKey);
+
+            throw new Error("Security Violation: Your project has been permanently deleted because you entered incorrectly 5 times.");
+        }
+
+        throw new Error(`The API key you entered is not the same as your current API key. Remaining attempts ${5 - attempts}`);
     }
+
+    await redisClient.del(attempKey);
 
     const keyStatusUpdate = await prisma.project.update({
         where: {
