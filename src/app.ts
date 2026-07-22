@@ -12,6 +12,7 @@ import router from './routes';
 import noCache from './middlewares/noCache';
 import rateLimit from './lib/rateLimit';
 import { sanitizeRequest } from './middlewares/sanitizeRequest';
+import cleanupTask from './modules/project/projectCleanup.service';
 
 const app = express();
 
@@ -45,6 +46,8 @@ app.use(rateLimit);
 app.use(sanitizeRequest);
 
 app.use(router);
+
+cleanupTask.start();
 
 app.get('/', async (req: Request, res: Response) => {
     res.send('Trace Log API is running...');

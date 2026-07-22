@@ -13,7 +13,7 @@ import { describe } from 'zod/v4/core';
 
 const limit = env.PROJECT_LIMIT || 3; // Default to 3 if not set
 
-const getCacheKey = (userId: number) => `user:${userId}:projectCount`;
+export const getCacheKey = (userId: number) => `user:${userId}:projectCount`;
 
 export const getProjectCount = async (userId: number): Promise<Number> => {
     const cacheKey = getCacheKey(userId);
