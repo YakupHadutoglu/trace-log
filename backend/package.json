@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
-    "start": "nodemon --exec ts-node src/erver.ts",
+    "start": "nodemon --exec ts-node src/server.ts",
     "build": "tsc --build tsconfig.json"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Yakup Hadutoğlu",
+  "license": "CC-BY-NC-4.0",
   "dependencies": {
     "@prisma/client": "^6.19.0",
     "@types/cookie-parser": "^1.4.10",
