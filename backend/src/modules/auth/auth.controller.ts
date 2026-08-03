@@ -146,7 +146,6 @@ export const changePassword = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Internal server error." });
     }
 }
-
 export const forgotPassword = async (req: Request, res: Response) => {
     try {
         const { email } = req.body;

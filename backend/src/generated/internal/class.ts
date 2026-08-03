@@ -23,7 +23,7 @@ const config: runtime.GetPrismaClientConfig = {
       "value": "prisma-client"
     },
     "output": {
-      "value": "/home/oem/Yedek/projeler/Back-end/trace-log/src/generated",
+      "value": "/app/src/generated",
       "fromEnvVar": null
     },
     "config": {
@@ -32,12 +32,12 @@ const config: runtime.GetPrismaClientConfig = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "linux-musl-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/oem/Yedek/projeler/Back-end/trace-log/prisma/schema.prisma",
+    "sourceFilePath": "/app/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativePath": "../../prisma",
@@ -47,16 +47,17 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
-        "fromEnvVar": "DATABASE_URL",
+        "fromEnvVar": "POSTGRES_URL",
         "value": null
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id              Int         @id @default(autoincrement())\n  email           String      @unique\n  name            String\n  surname         String\n  password        String\n  approvedStatus  Boolean     @default(false)\n  phoneNumber     String      @unique\n  isPhoneVerified Boolean     @default(false)\n  projects        Project[]\n  createdAt       DateTime    @default(now())\n  projectCount    Int         @default(0)\n  alarmRules      AlarmRule[] // User created alarm rules\n}\n\nmodel Project {\n  id                    Int      @id @default(autoincrement())\n  publicId              String   @unique @default(uuid())\n  name                  String\n  platform              String\n  useCase               String\n  apiKey                String   @unique\n  userId                Int\n  user                  User     @relation(fields: [userId], references: [id])\n  verificationKeyStatus Boolean  @default(false)\n  createdAt             DateTime @default(now())\n}\n\nmodel AlarmRule {\n  id        Int    @id @default(autoincrement())\n  projectId String @unique // ID of the project in MongoDB (Logs coming to this project will be scanned)\n  name      String // Name of the rule (Ex: Critical Database Error)\n\n  // Filtering Conditions (for Room 2 -Rules Engine)\n  conditionSeverity String? // Capture only logs at this level (Ex: CRITICAL)\n  conditionMessage  String? // Capture if the following word appears in the message (Ex: \"timeout\")\n\n  // Distribution Channels (for Room 4 -Fan-Out)\n  sendEmail   Boolean @default(false)\n  sendSMS     Boolean @default(false)\n  sendDiscord Boolean @default(false)\n\n  // Destination Addresses\n  discordWebHookUrl String? // Discord is a stupid link\n  targetEmail       String? // If left blank, the system will use the user's primary email address.\n  targetPhone       String? // If left blank, the system uses the user's primary phone number.\n\n  // Silencer /Spam Protection (for Room 3 -Throttling)\n  cooldownMinutes Int @default(5) // After an alarm is triggered, ignore subsequent matches for this many minutes.\n\n  createdAt DateTime @default(now())\n  updateAt  DateTime @updatedAt\n\n  // relationships\n  userId Int\n  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n",
-  "inlineSchemaHash": "a9ce6707059c4d99bb875d38790ea872f0024a391241abfa0bc3d5a43ca5b207",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"POSTGRES_URL\")\n}\n\nmodel User {\n  id              Int         @id @default(autoincrement())\n  email           String      @unique\n  name            String\n  surname         String\n  password        String\n  approvedStatus  Boolean     @default(false)\n  phoneNumber     String      @unique\n  isPhoneVerified Boolean     @default(false)\n  projects        Project[]\n  createdAt       DateTime    @default(now())\n  projectCount    Int         @default(0)\n  alarmRules      AlarmRule[] // User created alarm rules\n}\n\nmodel Project {\n  id                    Int      @id @default(autoincrement())\n  publicId              String   @unique @default(uuid())\n  name                  String\n  platform              String\n  useCase               String\n  apiKey                String   @unique\n  userId                Int\n  user                  User     @relation(fields: [userId], references: [id])\n  verificationKeyStatus Boolean  @default(false)\n  createdAt             DateTime @default(now())\n}\n\nmodel AlarmRule {\n  id        Int    @id @default(autoincrement())\n  projectId String @unique // ID of the project in MongoDB (Logs coming to this project will be scanned)\n  name      String // Name of the rule (Ex: Critical Database Error)\n\n  // Filtering Conditions (for Room 2 -Rules Engine)\n  conditionSeverity String? // Capture only logs at this level (Ex: CRITICAL)\n  conditionMessage  String? // Capture if the following word appears in the message (Ex: \"timeout\")\n\n  // Distribution Channels (for Room 4 -Fan-Out)\n  sendEmail   Boolean @default(false)\n  sendSMS     Boolean @default(false)\n  sendDiscord Boolean @default(false)\n\n  // Destination Addresses\n  discordWebHookUrl String? // Discord is a stupid link\n  targetEmail       String? // If left blank, the system will use the user's primary email address.\n  targetPhone       String? // If left blank, the system uses the user's primary phone number.\n\n  // Silencer /Spam Protection (for Room 3 -Throttling)\n  cooldownMinutes Int @default(5) // After an alarm is triggered, ignore subsequent matches for this many minutes.\n\n  createdAt DateTime @default(now())\n  updateAt  DateTime @updatedAt\n\n  // relationships\n  userId Int\n  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n",
+  "inlineSchemaHash": "fe6930091fdaf0c20b6d5e3cd474a02a4e771b81d68a4ba0bb267144d3bd0e2f",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
