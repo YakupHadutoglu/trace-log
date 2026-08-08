@@ -10,6 +10,7 @@ import LiveTopology from '@/components/landing/LiveTopology'
 import PlatformTabs from '@/components/landing/PlatformTabs'
 import IntegrationBash from '@/components/landing/IntregrationsBash'
 import CapabilitiesSection from '@/components/landing/CapabilitiesSection'
+import PipelineSection from '@/components/landing/PipelineSection'
 
 export default function Home() {
     return (
@@ -25,6 +26,7 @@ export default function Home() {
 				<FeaturesSection />
 				<IntegrationsSection />
 				<IntegrationBash />
+				<PipelineSection />
 				<FAQSection />
 				<Footer />
 
