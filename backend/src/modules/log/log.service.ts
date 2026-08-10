@@ -2,6 +2,7 @@ import { prisma } from '../../config/prisma';
 import { LogModel } from '../../models/Log';
 import { encryptApiKey, decryptApiKey } from '../../utils/encryption';
 import { AlarmService } from '../alarm/alarm.service';
+import { logBufferService } from './logBuffer.service';
 
 interface CreateLogPayload {
     projectId: string;
@@ -29,17 +30,19 @@ export class LogService {
 
         if (cleanApiKey !== decryptedDbKey) throw new Error('INVALID_APII_KEY');
 
-        const newLog = await LogModel.create({
+        const LogData = {
             projectId: project.publicId,
             level: payload.level,
             message: payload.message,
             metadata: payload.metadata || {},
             timestamp: new Date(payload.timestamp)
-        });
+        };
 
-        AlarmService.processLogAndTriggerAlarms(newLog).catch(err => console.error('[LogService | AlarmService] alarm error - error:', err));
+        logBufferService.addLog(LogData)
 
-        return newLog;
+        AlarmService.processLogAndTriggerAlarms(LogData).catch(err => console.error('[LogService | AlarmService] alarm error - error:', err));
+
+        return {status: 'queued', projectId: project.publicId};
     }
 
     static async getProjectLogs(projectId: string, page: number = 1, limit: number = 50, level?: string) {
