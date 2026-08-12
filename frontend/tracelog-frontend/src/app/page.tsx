@@ -11,11 +11,12 @@ import PlatformTabs from '@/components/landing/PlatformTabs'
 import IntegrationBash from '@/components/landing/IntregrationsBash'
 import CapabilitiesSection from '@/components/landing/CapabilitiesSection'
 import PipelineSection from '@/components/landing/PipelineSection'
+import CursorGlow from '@/components/landing/CursorGlow'
 
 export default function Home() {
     return (
         <main style={{ background: '#000000', color: '#FFFFFF', minHeight: '100vh', fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-
+				<CursorGlow/>
 				<Navbar />
 				<HeroSection />
 				<LogTerminal />
