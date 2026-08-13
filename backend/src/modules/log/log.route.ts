@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ingestLog, getLogs } from './log.controller';
+import { ingestBatchLogs, getLogs } from './log.controller';
 
 import { requireAuth } from '../../middlewares/auth';
 import { verifyToken } from '../../middlewares/requireEmailVerified';
@@ -8,7 +8,7 @@ import { getStats } from './log.controller';
 
 const router = Router();
 
-router.post('/ingest', ingestLog);
+router.post('/ingest/batch', ingestBatchLogs);
 router.get('/:publicId/stats', requireAuth, verifyToken, requireProjectOwner, getStats);
 router.get('/:publicId', requireAuth, verifyToken, requireProjectOwner, getLogs);
 

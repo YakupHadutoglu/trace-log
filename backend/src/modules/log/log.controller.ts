@@ -1,27 +1,42 @@
 import { Request, Response } from 'express';
 import { LogService } from './log.service';
 import { AnalyticsService } from '../project/analytics.service';
+import { success } from 'zod';
 
-export const ingestLog = async (req: Request, res: Response) => {
+export const ingestBatchLogs = async (req: Request, res: Response) => {
     try {
         const apiKeyheader = req.headers['authorization'] || req.headers['Authorization'];
         const projectIdHeader = req.headers['x-project-id'] || req.headers['X-Project-Id'];
-        const logData = req.body;
+        const logs = req.body;
         if (!apiKeyheader || !projectIdHeader) {
             return res.status(401).json({
                 success: false,
                 message: 'Missing Authorization or x-project-id header'
             });
         }
-        await LogService.createLog({
-            projectId: projectIdHeader as string,
-            apiKey: apiKeyheader as string,
-            level: logData.level,
-            message: logData.message,
-            metadata: logData.metadata,
-            timestamp: logData.timestamp
 
-        });
+        if (!Array.isArray(logs)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Payload must be an array of logs'
+            })
+        }
+
+        // await LogService.createLog({
+        //     projectId: projectIdHeader as string,
+        //     apiKey: apiKeyheader as string,
+        //     level: logData.level,
+        //     message: logData.message,
+        //     metadata: logData.metadata,
+        //     timestamp: logData.timestamp
+
+        // });
+
+        const result = await LogService.ingestBatch(
+            projectIdHeader as string,
+            apiKeyheader as string,
+            logs
+        );
 
         res.status(201).json({
             success: true,

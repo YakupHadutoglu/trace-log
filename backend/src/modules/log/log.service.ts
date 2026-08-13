@@ -4,23 +4,24 @@ import { encryptApiKey, decryptApiKey } from '../../utils/encryption';
 import { AlarmService } from '../alarm/alarm.service';
 import { logBufferService } from './logBuffer.service';
 
-interface CreateLogPayload {
+interface IncomingLog {
     projectId: string;
     apiKey: string;
     level: 'info' | 'warn' | 'error' | 'fatal' | 'debug';
     message: string;
     metadata?: any;
     timestamp: Date;
+    timeStamp?: Date | string; //! For case compatibility in SDK
 }
 
 export class LogService {
-    static async createLog(payload: CreateLogPayload) {
-        const cleanApiKey = payload.apiKey.replace('ApiKey ', '').trim();
+    static async ingestBatch(projectId: string, apiKey: string, logs: IncomingLog[]) {
+        const cleanApiKey = apiKey.replace('ApiKey ', '').trim();
 
-        const projectIdNum = parseInt(payload.projectId, 10);
+        const projectIdNum = parseInt(projectId, 10);
         const project = await prisma.project.findUnique({
             where: {
-                publicId: payload.projectId
+                publicId: projectId
             }
         });
 
@@ -30,17 +31,26 @@ export class LogService {
 
         if (cleanApiKey !== decryptedDbKey) throw new Error('INVALID_APII_KEY');
 
-        const LogData = {
-            projectId: project.publicId,
-            level: payload.level,
-            message: payload.message,
-            metadata: payload.metadata || {},
-            timestamp: new Date(payload.timestamp)
-        };
+        // const LogData = {
+        //     projectId: project.publicId,
+        //     level: payload.level,
+        //     message: payload.message,
+        //     metadata: payload.metadata || {},
+        //     timestamp: new Date(payload.timestamp)
+        // };
 
-        logBufferService.addLog(LogData)
+        logs.forEach(log => {
+            const LogData = {
+                projectId: project.publicId,
+                level: log.level,
+                message: log.message,
+                metadata: log.metadata || {},
+                timestamp: new Date(log.timeStamp || log.timestamp || new Date())
+            };
+            logBufferService.addLog(LogData)
 
-        AlarmService.processLogAndTriggerAlarms(LogData).catch(err => console.error('[LogService | AlarmService] alarm error - error:', err));
+            AlarmService.processLogAndTriggerAlarms(LogData).catch(err => console.error('[LogService | AlarmService] alarm error - error:', err));
+        });
 
         return {status: 'queued', projectId: project.publicId};
     }
