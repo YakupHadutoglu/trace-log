@@ -6,9 +6,9 @@ import { success } from 'zod';
 export const ingestBatchLogs = async (req: Request, res: Response) => {
     try {
         const apiKeyheader = req.headers['authorization'] || req.headers['Authorization'];
-        const projectIdHeader = req.headers['x-project-id'] || req.headers['X-Project-Id'];
+        const projectId = req.headers['x-project-id'] || req.headers['X-Project-Id'];
         const logs = req.body;
-        if (!apiKeyheader || !projectIdHeader) {
+        if (!apiKeyheader || !projectId) {
             return res.status(401).json({
                 success: false,
                 message: 'Missing Authorization or x-project-id header'
@@ -23,7 +23,7 @@ export const ingestBatchLogs = async (req: Request, res: Response) => {
         }
 
         // await LogService.createLog({
-        //     projectId: projectIdHeader as string,
+        //     projectId: projectId as string,
         //     apiKey: apiKeyheader as string,
         //     level: logData.level,
         //     message: logData.message,
@@ -33,7 +33,7 @@ export const ingestBatchLogs = async (req: Request, res: Response) => {
         // });
 
         const result = await LogService.ingestBatch(
-            projectIdHeader as string,
+            projectId as string,
             apiKeyheader as string,
             logs
         );

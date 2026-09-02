@@ -16,7 +16,7 @@ interface IncomingLog {
 
 export class LogService {
     static async ingestBatch(projectId: string, apiKey: string, logs: IncomingLog[]) {
-        const cleanApiKey = apiKey.replace('ApiKey ', '').trim();
+        const cleanApiKey = apiKey.replace('ApiKey ', '').replace('Bearer ', '').trim();
 
         const projectIdNum = parseInt(projectId, 10);
         const project = await prisma.project.findUnique({
