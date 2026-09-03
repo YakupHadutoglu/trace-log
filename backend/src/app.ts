@@ -55,7 +55,7 @@ app.get('/', async (req: Request, res: Response) => {
 
 export async function start() {
     await connectMongo();
-    redisClient.set("online", "true");
+    redisClient.set("online", "true", "EX", 86400);
 }
 
 export default app;
