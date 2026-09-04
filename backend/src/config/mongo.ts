@@ -1,8 +1,5 @@
-// import { MongoClient } from 'mongodb';
 import mongoose from 'mongoose';
 import env from './env';
-
-// export const mongoClient = new MongoClient(env.MONGO_URL || '');
 
 export const connectMongo = async () => {
     try {

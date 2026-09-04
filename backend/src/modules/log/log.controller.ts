@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { LogService } from './log.service';
-import { AnalyticsService } from '../project/analytics.service';
+import { AnalyticsService } from '../stats-engine/analytics.service';
 import { success } from 'zod';
 
 export const ingestBatchLogs = async (req: Request, res: Response) => {
